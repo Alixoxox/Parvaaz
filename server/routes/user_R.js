@@ -26,13 +26,13 @@ router.post("/signup", (req, res) => {
         user_tb.query(put_data_sql,[username,fname,lname,email,hashed_pass],(error,result)=>{
             if(error){
                 console.log("erorr inserting data",error);
-                if(err.code="ER_DUP_ENTRY"){ 
+                if(err.code==="ER_DUP_ENTRY"){ 
                     return res.json({ message: "username or email already taken" });
                 } return res.json({message:"Please Try Again Later\nSorry For the inconvenience"})
             }else{
-                const user_data={username,fname,lname,email};
-                const token=jwt.sign(user_data, SECRET_KEY, {expiresIn:'24h'})
-                return res.json({message:"User successfully created",token,user_data});
+                const user={id:result.insertId,username:username,fname:fname,lname:lname,email:email}
+                const token=jwt.sign(user, SECRET_KEY, {expiresIn:'24h'})
+                return res.json({message:"User successfully created",token,user});
             }
           })
         });
@@ -54,12 +54,12 @@ router.post("/login", (req, res) => {
                 return res.json({message:"Please Try Again Later\nSorry For the inconvenience"})
             }
             if(result.length>0){
-                const user=result[0]
-                const hashed_pass= await bcrypt.compare(password,user.password);
+                const data=result[0]
+                const user={id:data.id,username:data.username,fname:data.fname,lname:data.lname,email:data.email}
+                const hashed_pass= await bcrypt.compare(password,data.password);
                 if(hashed_pass){
-                    const user_data={username,fname:user.fname,lname:user.lname,email:user.email};
-                    const token=jwt.sign(user_data, SECRET_KEY, {expiresIn:'24h'})
-                    return res.json({message:"successfully logged in",token,user_data});
+                    const token=jwt.sign(user, SECRET_KEY, {expiresIn:'24h'})
+                    return res.json({message:"successfully logged in",token,user});
                 }
             }
             return res.json({message:"user not Found.\nPlease Create a new Account"});

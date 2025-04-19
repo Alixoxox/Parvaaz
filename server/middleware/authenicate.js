@@ -4,7 +4,7 @@ const authenicator=(req,res,next)=>{
     try{
         const authheader=req.headers.authorization; //authorization header 
         if(!authheader || !authheader.startsWith("Bearer ")){
-            return res.json({message:"Please start with : Bearer token_val"});
+            return res.json({message:"Please start with Bearer token_val \nYou might not be logged in"});
         }
         const token=authheader.split(" ")[1];
         if(!token){
@@ -20,12 +20,11 @@ const authenicator=(req,res,next)=>{
                 return res.json({message:"Expired/Invalid Token"});
             }
             req.user=user;
-            console.log(req.user);
-            console.log("Passed authenicator");
             next();
         })
     }catch(err){
         console.log("Error occured at authenicator");
+        return res.json({message:"You might not be logged in"});
     }
 }
 export default authenicator;
