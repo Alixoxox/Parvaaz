@@ -30,7 +30,7 @@ router.post("/signup", (req, res) => {
                     return res.json({ message: "username or email already taken" });
                 } return res.json({message:"Please Try Again Later\nSorry For the inconvenience"})
             }else{
-                const user={id:result.insertId,username:username,fname:fname,lname:lname,email:email}
+                const user={id:result.insertId,username:username,fname:fname,lname:lname,email:email,role:"user"}
                 const token=jwt.sign(user, SECRET_KEY, {expiresIn:'24h'})
                 return res.json({message:"User successfully created",token,user});
             }
@@ -55,7 +55,7 @@ router.post("/login", (req, res) => {
             }
             if(result.length>0){
                 const data=result[0]
-                const user={id:data.id,username:data.username,fname:data.fname,lname:data.lname,email:data.email}
+                const user={id:data.id,username:data.username,fname:data.fname,lname:data.lname,email:data.email,role:"user"}
                 const hashed_pass= await bcrypt.compare(password,data.password);
                 if(hashed_pass){
                     const token=jwt.sign(user, SECRET_KEY, {expiresIn:'24h'})
