@@ -1,4 +1,4 @@
-import authenicator from "../middleware/authenicate.js";
+import {authenicator} from "../middleware/authenicate.js";
 import booking_tb from "../models/booking.js";
 import flights_tb from "../models/flights_db.js";
 import flight_schedule_tb from '../models/flights_schedule_db.js'

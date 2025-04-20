@@ -21,7 +21,8 @@ const sql=`CREATE TABLE IF NOT EXISTS flight_schedules (
     origin VARCHAR(50) NOT NULL,
     destination VARCHAR(50) NOT NULL,
     available_seats INT NOT NULL,
-    FOREIGN KEY (flight_id) REFERENCES flights(id) ON DELETE CASCADE
+    FOREIGN KEY (flight_id) REFERENCES flights(id) ON DELETE CASCADE,
+    UNIQUE (flight_id, flight_date)
 );
 `
 flight_schedule_tb.query(sql,(err)=>{
