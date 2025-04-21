@@ -3,6 +3,7 @@ import user_tb from "../models/user_db.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { SECRET_KEY } from "../config/dotenv.js";
+import {authenicator} from '../middleware/authenicate.js'
 const router = Router();
 //add authenicate func here with jwt
 router.post("/signup", (req, res) => {
@@ -69,4 +70,32 @@ router.post("/login", (req, res) => {
     }
 });
 
+router.patch("/changePassword",authenicator,(req,res)=>{
+    const user_id=req.user.id;
+    const {oldPassword,newPassword}=req.body;
+    
+    const sq1='SELECT password FROM users WHERE id=?';
+    user_tb.query(sq1,[user_id],async(error,result)=>{
+        if(error){
+            console.log(err);
+            return res.json({message:"Sorry You must have an account"})
+        }
+        const recoveredPass=result[0].password;
+        const issame=await bcrypt.compare(oldPassword,recoveredPass)
+        if(issame){
+            const newhashedpass=await bcrypt.hash(newPassword,10)
+
+            const sql2='UPDATE users SET password=? WHERE id=?;';
+            user_tb.query(sql2,[newhashedpass,user_id],(error2,result2)=>{
+                if(error2){
+                    console.log("ERROR",error2);
+                    return res.json({message:"Something went wrong please try again later"});
+                }
+                return res.json({message:"Successfully Updated Password"})
+            })
+        }else{
+            return res.json({message:"Sorry Your password doesnt match with the old password."})
+        }
+    })
+})
 export default router;

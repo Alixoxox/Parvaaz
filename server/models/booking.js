@@ -21,7 +21,7 @@ const sql=`CREATE TABLE IF NOT EXISTS bookings (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (flight_id) REFERENCES flights(id) ON DELETE CASCADE,
     FOREIGN KEY (flight_schedule) REFERENCES flight_schedules(id) ON DELETE CASCADE, 
-    UNIQUE (flight_id, seat_no)     -- To make sure one seat can't be double-booked
+    UNIQUE ( seat_no,flight_schedule)     -- To make sure one seat can't be double-booked
 );`
 booking_tb.query(sql,(error)=>{
     if(error){
