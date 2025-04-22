@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { CreateNewSchedule,checkFlightId,checkAirline } from "../utilis/adminHelper.js";
+import { CreateNewSchedule,checkFlightId,checkAirline,checkTerminal } from "../utilis/adminHelper.js";
 import { CheckAdmin } from "../middleware/authenicate.js";
 import airlines_tb from "../models/airlines_db.js";
 import flights_tb from '../models/flights_db.js'
@@ -21,11 +21,12 @@ router.post('/',(req,res)=>{
 })
 //flight+schedule
 router.post('/create/flight',CheckAdmin,async(req,res)=>{
-    const {origin,destination,departure_date,departure_time,arrival_time,airline_code,total_seats}=req.body;
-    if( !origin || !destination|| !departure_date || !departure_time || !arrival_time || !total_seats ){
+    const {origin,destination,departure_date,departure_time,arrival_time,airline_code,total_seats,terminal_no}=req.body;
+    if( !origin || !destination|| !departure_date || !departure_time || !arrival_time || !total_seats || !terminal_no){
        return res.json({message:"Fill in the required fields"})
     }
     try{
+        checkTerminal(terminal_no)
         const airline_id=await checkAirline(airline_code)
         const flight_code=airline_code + Math.floor(Math.random() * 900 + 100)   //3-digit number between 100 and 999
         const sql=`INSERT INTO flights(airline_id,flight_code,total_seats) VALUES (?,?,?);`;
@@ -38,7 +39,7 @@ router.post('/create/flight',CheckAdmin,async(req,res)=>{
                 return res.json({message:"Please Try Again Later"});
             }
             const flight_id=result.insertId
-            const x=await CreateNewSchedule(flight_id,departure_date,departure_time,arrival_time,origin,destination,total_seats);
+            const x=await CreateNewSchedule(flight_id,departure_date,departure_time,arrival_time,origin,destination,total_seats,terminal_no);
             return res.json({message:x})
         })
     }catch(error){
@@ -62,7 +63,7 @@ router.post('/create/airline',CheckAdmin,(req,res)=>{
             return res.json({message:"airline successfully registerd"});
         })
 })
-
+//flight_schedule
 router.post("/create/schedule",CheckAdmin,async(req,res)=>{
     try{
         const {flight_code,departure_date,departure_time,arrival_time,origin,destination,total_seats}=req.body
@@ -76,5 +77,6 @@ router.post("/create/schedule",CheckAdmin,async(req,res)=>{
         return res.json({message:err})
     }
 })
+
 
 export default router

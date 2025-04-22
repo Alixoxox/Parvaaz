@@ -21,8 +21,10 @@ const sql=`CREATE TABLE IF NOT EXISTS flight_schedules (
     origin VARCHAR(50) NOT NULL,
     destination VARCHAR(50) NOT NULL,
     available_seats INT NOT NULL,
+    terminal_id INT NOT NULL,
     FOREIGN KEY (flight_id) REFERENCES flights(id) ON DELETE CASCADE,
-    UNIQUE (flight_id, flight_date)
+    FOREIGN KEY (terminal_id) REFERENCES terminal(id) ON DELETE CASCADE,
+    UNIQUE (flight_id, flight_date)    -- no same flight rescheduled twice a day
 );
 `
 flight_schedule_tb.query(sql,(err)=>{
