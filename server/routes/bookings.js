@@ -44,7 +44,7 @@ router.delete('/delete',authenicator,(req,res)=>{
     const user_id=req.user.id
     const {flight_id,schedule_id} = req.body; //flight id attained after
     const sql='DELETE FROM bookings WHERE flight_schedule=? AND flight_id=? AND user_id=?'
-
+    
     booking_tb.query(sql,[schedule_id,flight_id,user_id],(error,result)=>{
         if(error){
             console.log(error);

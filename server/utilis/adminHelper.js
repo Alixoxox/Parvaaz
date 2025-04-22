@@ -1,6 +1,7 @@
 import flights_tb from "../models/flights_db.js";
 import airlines_tb from "../models/airlines_db.js";
 import flight_schedule_tb from "../models/flights_schedule_db.js";
+import terminal_tb from "../models/terminal_db.js";
 
 export const checkFlightId=(flight_code)=>{
     return new Promise((resolve,reject)=>{
@@ -27,10 +28,24 @@ export const checkAirline=(airline_code)=>{
         })
     })
 }
-export const CreateNewSchedule=(flight_id,departure_date,departure_time,arrival_time,origin,destination,total_seats)=>{
+
+export const checkTerminal=(terminal_no)=>{
     return new Promise((resolve,reject)=>{
-        const sql2=`INSERT INTO flight_schedules(flight_id, flight_date, departure_time, arrival_time,origin,destination, available_seats) VALUES (?,?,?,?,?,?,?);`;
-        flight_schedule_tb.query(sql2,[flight_id,departure_date,departure_time,arrival_time,origin,destination,total_seats],(error,result)=>{
+        const sql=`SELECT id from terminal WHERE id=?`;
+        terminal_tb.query(sql,[terminal_no],(err,result)=>{
+            if(err){
+                console.log(err);
+                return reject("Please Try again later");
+            }if (result.length>0){
+                return resolve(true)
+            }return reject("There is no Terminal no for the one you entered")
+        })
+    })
+}
+export const CreateNewSchedule=(flight_id,departure_date,departure_time,arrival_time,origin,destination,total_seats,terminal_no)=>{
+    return new Promise((resolve,reject)=>{
+        const sql2=`INSERT INTO flight_schedules(flight_id, flight_date, departure_time, arrival_time,origin,destination, available_seats,terminal_id) VALUES (?,?,?,?,?,?,?);`;
+        flight_schedule_tb.query(sql2,[flight_id,departure_date,departure_time,arrival_time,origin,destination,total_seats,terminal_no],(error,result)=>{
             if(error){
                 if (error.code === 'ER_DUP_ENTRY') {
                     return reject("This route already exists. Please create a new route." );
