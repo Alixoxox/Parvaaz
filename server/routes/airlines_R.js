@@ -22,5 +22,4 @@ router.post('/search',(req,res)=>{
     }
 })
 
-
 export default router;

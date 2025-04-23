@@ -4,8 +4,8 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { SECRET_KEY } from "../config/dotenv.js";
 import {authenicator} from '../middleware/authenicate.js'
+import { usernameNotTaken,emailNotTaken } from "../utilis/loginHelper.js";
 const router = Router();
-//add authenicate func here with jwt
 router.post("/signup", (req, res) => {
     try{
         const { username, fname, lname, email, password } = req.body;
@@ -40,7 +40,6 @@ router.post("/signup", (req, res) => {
     }catch(err){
         console.log(err)}
 });
-
 router.post("/login", (req, res) => {
     try{
         const { username, password } = req.body;
@@ -69,7 +68,6 @@ router.post("/login", (req, res) => {
         console.log(err)
     }
 });
-
 router.patch("/changePassword",authenicator,(req,res)=>{
     const user_id =req.user.id;
         if(!user_id){
@@ -100,5 +98,52 @@ router.patch("/changePassword",authenicator,(req,res)=>{
             return res.json({message:"Sorry Your password doesnt match with the old password."})
         }
     })
+})
+router.delete('/Acc/delete',authenicator,(req,res)=>{
+    const user_id=req.user.id;
+    if(!user_id){
+        return res.json({message:"You must be a user to delete an account"});
+    }
+    const sql=`DELETE FROM users WHERE id=?`;
+    user_tb.query(sql,(error,result)=>{
+        if(error){
+            console.log(error)
+            res.json({message:"Something went wrong please try again later"})
+        }
+        if(result.affectedRows===0){
+            return res.json({message:"No User Found for this id"});
+        }
+        return res.json({message:"Successfully Deleted User Account"});
+    })
+})
+router.put("/Acc/update",authenicator,async(req,res)=>{
+    try{
+        const user_id=req.user.id;
+        if(!user_id){
+            return res.json({message:"You must be a user to update account details"});
+        }
+        const {username,fname,lname,email,password} = req.body
+        if(!username || !fname || !lname || !email || !password){
+            return res.json({messsage:"Please give the required info"})
+        }
+        let user=await usernameNotTaken(username);
+        let emailid=await emailNotTaken(email); 
+        const password_hash=bcrypt.hash(password,10);
+        const sql="UPDATE users SET username = ?,fname=?,lname=?,email=?,password=? WHERE id=?"
+        user_tb.query(sql,[username,fname,lname,email,password_hash],(err,result)=>{
+            if(err){
+                console.log(err);
+                return res.json({message:"Please. Try again later"})
+            }if (result.affectedRows === 0) {
+                return res.json({ message: "No pre defined user available" });
+            }
+            const user={id:user_id,username:username,fname:fname,lname:lname,email:email,role:"user"}
+            const token=jwt.sign(user, SECRET_KEY, {expiresIn:'24h'})
+            return res.json({message:"successfully Updated credentails",token,user});
+        })
+    }catch(err){
+        console.log(err);
+        return res.json({message:err})
+    }
 })
 export default router;
