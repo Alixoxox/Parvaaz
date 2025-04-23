@@ -71,7 +71,10 @@ router.post("/login", (req, res) => {
 });
 
 router.patch("/changePassword",authenicator,(req,res)=>{
-    const user_id=req.user.id;
+    const user_id =req.user.id;
+        if(!user_id){
+            return res.json({message:"You must be a user to access this"})
+        }
     const {oldPassword,newPassword}=req.body;
     
     const sq1='SELECT password FROM users WHERE id=?';

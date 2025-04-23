@@ -7,9 +7,7 @@ import airlinesRouter from './routes/airlines_R.js'
 import adminRoute from './routes/admin_R.js'
 import bookingRoute from "./routes/bookings.js"
 import baggage_Router from './routes/baggae_R.js'
-import terminalRouter from "./routes/terminal_R.js"
-import servicesRouter from './routes/service_R.js'
-import staffRouter from './routes/staff_R.js'
+import staff_and_terminal_Router from './routes/staff_terminal_services_R.js'
 const app=express()
 
 app.use(express.json());
@@ -20,9 +18,8 @@ app.use('/api/data/airlines',airlinesRouter);
 app.use("/api/admin",adminRoute)
 app.use('/api/users/booking',bookingRoute)
 app.use('/api/data/baggage', baggage_Router)
-app.use("/api/data/terminal",terminalRouter)
-app.use("/api/data/services",servicesRouter)
-app.use('/api/data/services',staffRouter)
+app.use('/api/data',staff_and_terminal_Router)
+
 app.listen(PORT,()=>{
     console.log("Server running in Port : ",PORT);
 })

@@ -14,7 +14,7 @@ const CalcExtraCharges=(weight,size_tag)=>{
     }return 0
 }
 
-router.post("/",authenicator,(req,res)=>{
+router.post("/new",authenicator,(req,res)=>{
     try{
         const {booking_id, weight , size_tag}=req.body;
         if(!booking_id || !weight || !size_tag ){
@@ -35,7 +35,10 @@ router.post("/",authenicator,(req,res)=>{
 })
 
 router.get("/show",authenicator,(req,res)=>{
-    const user_id=req.user.id
+    const user_id =req.user.id;
+    if(!user_id){
+        return res.json({message:"You must be a user to access this"})
+    }
     const sql=`SELECT ba.id as baggae_id,ba.booking_id ,ba.weight, ba.size_tag,ba.extra_charge,b.flight_id, b.flight_schedule ,fs.flight_date, fs.departure_time, fs.arrival_time, fs.origin, fs.destination 
     FROM baggage ba, bookings b, flight_schedules fs 
     WHERE ba.booking_id=b.id AND b.flight_schedule=fs.id AND b.user_id=? `

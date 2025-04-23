@@ -3,7 +3,7 @@ import flights_tb from "../models/flights_db.js";
 const router = Router();
 
 //show the list of 20 latest flight display
-router.get('/',(req,res)=>{
+router.get('/show',(req,res)=>{
     const sql=`SELECT f.flight_code,fs.departure_time,fs.arrival_time,fs.origin,fs.destination ,a.airline_code,a.name as airline_name, a.country as airline_country FROM flights f , airlines a ,flight_schedules fs
                 WHERE f.airline_id = a.id AND fs.flight_id=f.id
                 ORDER BY fs.departure_time DESC LIMIT 20;`
