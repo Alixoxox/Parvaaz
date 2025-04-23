@@ -7,7 +7,9 @@ import terminal_tb from "../models/terminal_db.js";
 import services_tb from "../models/service_db.js";
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config/dotenv.js";
+import user_tb from "../models/user_db.js";
 const router=Router()
+
 //admin loging
 router.post('/login',(req,res)=>{
     const {username,password} = req.body
@@ -21,6 +23,7 @@ router.post('/login',(req,res)=>{
     }
     return res.json({message:"You Don't Have the Propper Credentials"});
 })
+
 //flight+schedule
 router.post('/create/flight',CheckAdmin,async(req,res)=>{
     const {origin,destination,departure_date,departure_time,arrival_time,airline_code,total_seats,terminal_no}=req.body;
@@ -130,5 +133,19 @@ router.post('/create/service',CheckAdmin,(req,res)=>{
         console.log(err);
         return res.json({message:err})
     }
+})
+
+router.get('/show/users',CheckAdmin,(req,res)=>{
+    const sql=`SELECT id , username,fname,lname FROM users
+    ORDER BY id ;`
+    user_tb.query(sql,(err,result)=>{
+        if(err){
+            console.log(err)
+        }
+        if(result.length>0){
+            return res.json(result)
+        }
+        return res.json({message:"No users have signed up yet"})
+    })
 })
 export default router
