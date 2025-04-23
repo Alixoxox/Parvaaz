@@ -8,7 +8,10 @@ const router=Router()
 
 router.post('/new',authenicator,async(req,res)=>{
     try{
-    const user_id =req.user.id;;
+    const user_id =req.user.id;
+    if(!user_id){
+        return res.json({message:"You must be a user to access this"})
+    }
     const {flight_code,seatno,booking_date} = req.body //search flight id by ising flight_code and search if seat no. not pre taken
     if(!flight_code || !seatno || !booking_date ){
         return res.json({message:"You must fill in all the required fields"})
@@ -41,7 +44,10 @@ router.post('/new',authenicator,async(req,res)=>{
 })
 //cancel or delete booking
 router.delete('/delete',authenicator,(req,res)=>{
-    const user_id=req.user.id
+    const user_id =req.user.id;
+    if(!user_id){
+        return res.json({message:"You must be a user to access this"})
+    }
     const {flight_id,schedule_id} = req.body; //flight id attained after
     const sql='DELETE FROM bookings WHERE flight_schedule=? AND flight_id=? AND user_id=?'
     
@@ -64,13 +70,22 @@ router.delete('/delete',authenicator,(req,res)=>{
     })
 })
 
-//for flight history -> order by fs.flight_date desc
-//for future -> order by fs.flight_date asc
-router.get('/showAll',authenicator,(req,res)=>{
+//for flight history -> GET /show/history
+//for future -> GET /show/future
+router.get('/show/:type',authenicator,(req,res)=>{
     const user_id=req.user.id;
+    if(!user_id){
+        return res.json({message:"You must be logged in"})
+    }
+    const flightType=req.params.type;
+    const sortby=(flightType==="history" ? "fs.flight_date DESC" : flightType === "future"? "fs.fs.flight_date ASC":null);
+    if(!sortby){
+        return res.json({message:"enter history or future only in the param i.e show/history"});
+    }
     const sql=`SELECT fs.id as schedule_id,fs.flight_id, fs.flight_date, fs.departure_time, fs.arrival_time, fs.origin, fs.destination,f.flight_code,a.airline_code, a.name AS airline_name, a.country AS airline_country, a.contact AS airline_contact,b.seat_no
     FROM flight_schedules fs, flights f,airlines a, bookings b
-    WHERE fs.flight_id=f.id AND f.airline_id=a.id AND b.user_id=?;`;
+    WHERE fs.flight_id=f.id AND f.airline_id=a.id AND b.user_id=?
+    ORDER BY ${sortby};`;
 
     flight_schedule_tb.query(sql,[user_id],(error,result)=>{
         if(error){
