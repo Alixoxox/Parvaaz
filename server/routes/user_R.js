@@ -12,7 +12,6 @@ router.post("/signup", (req, res) => {
         if (!username || !fname || !lname || !email || !password) {  //if any-field empty
            return res.json("Please fill out the propper credentails");
         }
-        
         const sql = `SELECT * FROM users WHERE username = ? OR email = ?;`;
         user_tb.query(sql, [username,email],async(err, qres) => {
         if (err) {
@@ -81,25 +80,27 @@ router.patch("/changePassword",authenicator,(req,res)=>{
             console.log(err);
             return res.json({message:"Sorry You must have an account"})
         }
-        const recoveredPass=result[0].password;
-        const issame=await bcrypt.compare(oldPassword,recoveredPass)
-        if(issame){
-            const newhashedpass=await bcrypt.hash(newPassword,10)
-
-            const sql2='UPDATE users SET password=? WHERE id=?;';
-            user_tb.query(sql2,[newhashedpass,user_id],(error2,result2)=>{
-                if(error2){
-                    console.log("ERROR",error2);
-                    return res.json({message:"Something went wrong please try again later"});
-                }
-                return res.json({message:"Successfully Updated Password"})
-            })
-        }else{
-            return res.json({message:"Sorry Your password doesnt match with the old password."})
+        if(result.length>0){
+            const recoveredPass=result[0].password;
+            const issame=await bcrypt.compare(oldPassword,recoveredPass)
+            if(issame){
+                const newhashedpass=await bcrypt.hash(newPassword,10)
+                const sql2='UPDATE users SET password=? WHERE id=?;';
+                user_tb.query(sql2,[newhashedpass,user_id],(error2,result2)=>{
+                    if(error2){
+                        console.log("ERROR",error2);
+                        return res.json({message:"Something went wrong please try again later"});
+                    }
+                    return res.json({message:"Successfully Updated Password"})
+                })
+            }else{
+                return res.json({message:"Sorry Your password doesnt match with the old password."})
+            }
         }
+        return res.json({message:"You must have an account"})
     })
 })
-router.delete('/Acc/delete',authenicator,(req,res)=>{
+router.delete('/acc/delete',authenicator,(req,res)=>{
     const user_id=req.user.id;
     if(!user_id){
         return res.json({message:"You must be a user to delete an account"});
@@ -116,7 +117,7 @@ router.delete('/Acc/delete',authenicator,(req,res)=>{
         return res.json({message:"Successfully Deleted User Account"});
     })
 })
-router.put("/Acc/update",authenicator,async(req,res)=>{
+router.put("/acc/update",authenicator,async(req,res)=>{
     try{
         const user_id=req.user.id;
         if(!user_id){
@@ -145,5 +146,22 @@ router.put("/Acc/update",authenicator,async(req,res)=>{
         console.log(err);
         return res.json({message:err})
     }
+})
+router.get('acc/info',authenicator,(req,res)=>{
+    const user_id=req.user.id;
+    if(!user_id){
+        return res.json({message:"You must be a user to update account details"})
+    }
+    const sql='SELECT * FROM users WHERE id=?;';
+    user_tb.query(sql,[user_id],(err,result)=>{
+        if(err){
+            console.log(err);
+            return res.json({message:"Please Try again later"});
+        }
+        if(result.length>0){
+            return res.json(result)
+        }
+        return res.json({message:"Data of current user not available"})
+    })
 })
 export default router;
