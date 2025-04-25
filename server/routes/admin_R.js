@@ -148,4 +148,4 @@ router.get('/show/users',CheckAdmin,(req,res)=>{
         return res.json({message:"No users have signed up yet"})
     })
 })
-export default router
+export default router;
