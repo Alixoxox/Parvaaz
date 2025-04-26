@@ -8,36 +8,37 @@ import { usernameNotTaken,emailNotTaken } from "../utilis/loginHelper.js";
 const router = Router();
 router.post("/signup", (req, res) => {
     try{
-        const { username, fname, lname, email, password } = req.body;
-        if (!username || !fname || !lname || !email || !password) {  //if any-field empty
+    const { username, fname, lname, email, passport_no, password } = req.body;
+        if (!username || !fname || !lname || !email || !passport_no ||!password) {  //if any-field empty
            return res.json("Please fill out the propper credentails");
         }
-        const sql = `SELECT * FROM users WHERE username = ? OR email = ?;`;
-        user_tb.query(sql, [username,email],async(err, qres) => {
+        const sql = `SELECT * FROM users WHERE username = ? OR email = ? OR passport_no=?;`;
+        user_tb.query(sql, [username,email,passport_no],async(err, qres) => {
         if (err) {
             console.log("Error selecting data from users table", err);
             return res.json({message:"Please Try Again Later\nSorry For the inconvenience"})
         }
         if (qres.length > 0) {
-           return res.json({message: "username or email already taken"});
+           return res.json({message: "username or email or passport_no already taken"});
         }
         const hashed_pass= await bcrypt.hash(password,10)
-        const put_data_sql=`INSERT INTO users (username,fname,lname,email,password) VALUES (?,?,?,?,?);`
-        user_tb.query(put_data_sql,[username,fname,lname,email,hashed_pass],(error,result)=>{
+        const put_data_sql=`INSERT INTO users (username,fname,lname,email, passport_no, password) VALUES (?,?,?,?,?);`
+        user_tb.query(put_data_sql,[username,fname,lname,email,passport_no,hashed_pass],(error,result)=>{
             if(error){
                 console.log("erorr inserting data",error);
                 if(err.code==="ER_DUP_ENTRY"){ 
-                    return res.json({ message: "username or email already taken" });
+                    return res.json({ message: "username or email or passport already taken" });
                 } return res.json({message:"Please Try Again Later\nSorry For the inconvenience"})
             }else{
-                const user={id:result.insertId,username:username,fname:fname,lname:lname,email:email,role:"user"}
+                const user={id:result.insertId,username:username,fname:fname,lname:lname,email:email,passport_no:passport_no,role:"user"}
                 const token=jwt.sign(user, SECRET_KEY, {expiresIn:'24h'})
                 return res.json({message:"User successfully created",token,user});
             }
           })
         });
     }catch(err){
-        console.log(err)}
+        console.log(err);
+        return res.json({message:"somehing went wrong Please try again later"})}
 });
 router.post("/login", (req, res) => {
     try{
@@ -54,7 +55,7 @@ router.post("/login", (req, res) => {
             }
             if(result.length>0){
                 const data=result[0]
-                const user={id:data.id,username:data.username,fname:data.fname,lname:data.lname,email:data.email,role:"user"}
+                const user={id:data.id,username:data.username,fname:data.fname,lname:data.lname,email:data.email,passport_no:data.passport_no,role:"user"}
                 const hashed_pass= await bcrypt.compare(password,data.password);
                 if(hashed_pass){
                     const token=jwt.sign(user, SECRET_KEY, {expiresIn:'24h'})
@@ -64,7 +65,8 @@ router.post("/login", (req, res) => {
             return res.json({message:"user not Found.\nPlease Create a new Account"});
         })
     }catch(err){
-        console.log(err)
+        console.log(err);
+        return res.json({message:"somehing went wrong Please try again later"})
     }
 });
 router.patch("/changePassword",authenicator,(req,res)=>{
@@ -159,7 +161,7 @@ router.get('acc/info',authenicator,(req,res)=>{
             return res.json({message:"Please Try again later"});
         }
         if(result.length>0){
-            return res.json(result)
+            return res.json(result[0])
         }
         return res.json({message:"Data of current user not available"})
     })
