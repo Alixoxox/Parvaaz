@@ -18,8 +18,10 @@ const sql= ` CREATE TABLE IF NOT EXISTS users (
     fname VARCHAR(50) NOT NULL,
     lname VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL );` ;
-
+    passport_no VARCHAR(9) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+    );` ;
+    
 user_tb.query(sql,(error)=>{
     if(error){
         console.log("Failed to create User Table: ",error);
