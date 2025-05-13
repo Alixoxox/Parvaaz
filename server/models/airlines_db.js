@@ -17,7 +17,8 @@ const sql=`CREATE TABLE IF NOT EXISTS airlines (
     airline_code VARCHAR(10) NOT NULL UNIQUE,  -- Optional PIA , UAE
     name VARCHAR(100) NOT NULL UNIQUE,
     country VARCHAR(50) NOT NULL,
-    contact VARCHAR(100) NOT NULL
+    contact VARCHAR(100) ,
+    info VARCHAR(255)
 );`;
 
 airlines_tb.query(sql,(error)=>{
