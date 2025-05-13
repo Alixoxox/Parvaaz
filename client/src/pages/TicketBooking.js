@@ -1,0 +1,340 @@
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { useApp } from '../context/parvaaz';
+import { bookFlight } from '../utils/flightService';
+function TicketBooking() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const {user,selectedFlight,cabinClass,returnDate,passengers,toCity,fromCity,tripType,setbookedAnchor}=useApp()
+const [bookingReference,setBookingReference]=useState()
+  const flightData = location.state?.flight || selectedFlight ;
+  const [paymentMethod, setPaymentMethod] = useState('creditCard');
+  const [cardDetails, setCardDetails] = useState({
+    number: '',
+    name: '',
+    expiry: '',
+    cvv: ''
+  });
+  const [seatsbooked,setseatBooked] = useState([]);
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [isBooked, setIsBooked] = useState(false);
+
+  const handleCardDetailsChange = (e) => {
+    const { name, value } = e.target;
+    setCardDetails({
+      ...cardDetails,
+      [name]: value
+    });
+  };
+  const handleConfirmBooking = () => {
+    setIsLoading(true);
+    if (!user) {
+      navigate("/login", { replace: true });
+      setIsBooked(false);
+      alert("You must be an active user first");
+    } else {
+      const bookit = async () => {
+        try {
+          const data = await bookFlight(flightData.schedule_id, flightData.flight_id, tripType, returnDate, fromCity, toCity, cabinClass, passengers);
+          
+          // Handle failed booking
+          if (data.message === 'Failed to book flight') {
+            alert(data.message);
+            setIsBooked(false); // Don't show booking page if booking fails
+            setIsLoading(false); // stop loading
+            return; // Stop further execution
+          }
+  
+          // If booking is successful, update state
+          alert(data.message || data.error);
+          setseatBooked(data.seats);
+          setIsBooked(true); // Only set to true if the booking succeeds
+          setBookingReference(data.bookingIds?.map(id => "PV" + id));
+        } catch (error) {
+          console.error("Booking failed: ", error);
+          alert("An error occurred during booking.");
+          setIsBooked(false); // Make sure isBooked is false on error
+        } finally {
+          setIsLoading(false); // Always reset loading state
+        }
+      };
+      bookit();
+    }
+  };
+
+  const handleViewTicket = () => {
+    setbookedAnchor(true)
+    navigate('/user-profile');
+  };
+  return (
+    <div className="min-h-screen bg-gray-50 ">
+      <Navbar />
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 py-8 mt-20">
+        <div className="max-w-6xl mx-auto px-4">
+          <h1 className="text-3xl font-bold text-white mb-2">
+            {isBooked ? 'Booking Confirmed!' : 'Complete Your Booking'}
+          </h1>
+           </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 mt-8">
+        {isBooked ? (
+          <div className="bg-white p-8 rounded-lg shadow-md mb-20 mt-20">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Booking Successful!</h2>
+              <p className="text-gray-600">
+                Your ticket has been booked successfully. You will receive a confirmation email shortly.
+              </p>
+            </div>
+            
+            <div className="border-t border-b py-4 mb-6">
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-600">Booking Reference:</span>
+                              { bookingReference?.map(ref => (<span key={ref} className="font-semibold">{ref}</span> ))}
+              </div>
+                  <div className="flex justify-between mb-2">
+                  <span className="text-gray-600">Seats Allocated</span>
+                  {seatsbooked?.map((seat, idx) => (
+                      <span key={idx} className="font-semibold">Seat-{seat}</span>
+                    ))}
+                </div>
+             
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-600">Passenger:</span>
+                <span className="font-semibold">{`${user.fname} ${user.lname}`}</span>
+              </div>
+
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-600">Flight:</span>
+                <span className="font-semibold">{`${flightData.flight_code}`}</span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-600">Route:</span>
+                <span className="font-semibold">{`${flightData.origin} to ${flightData.destination}`}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Date & Time:</span>
+                <span className="font-semibold">{`${flightData.flight_date.slice(0,10)}, ${flightData.departure_time}`}</span>
+              </div>
+            </div>
+            
+            <div className="flex justify-center mb-10">
+              <button 
+                onClick={handleViewTicket}
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-8 rounded-lg font-medium hover:shadow-lg transition duration-300"
+              >
+                View E-Ticket
+              </button>
+            </div>
+            <Footer />
+          </div>
+        ) : (<>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Booking Summary */}
+            <div className="md:col-span-1">
+              <div className="bg-white p-6 rounded-lg shadow-md sticky top-8">
+                <h2 className="text-xl font-semibold mb-4 pb-2 border-b">Booking Summary</h2>
+                
+                <div className="mb-4">
+                  <p className="text-gray-600 text-sm">Flight</p>
+                  <p className="font-medium">{flightData.flight_code}</p>
+                </div>
+                
+                <div className="flex items-center mb-4">
+                  <div className="flex-1">
+                    <p className="text-gray-600 text-sm">From</p>
+                    <p className="font-medium">{flightData.origin.toUpperCase()}</p>
+                  </div>
+                  <div className="flex-1 text-right">
+                    <p className="text-gray-600 text-sm">To</p>
+                    <p className="font-medium">{flightData.destination.toUpperCase()}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center mb-4">
+                  <div className="flex-1">
+                    <p className="text-gray-600 text-sm">Date</p>
+                    <p className="font-medium">{flightData.flight_date.slice(0,10)}</p>
+                  </div>
+                  <div className="flex-1 text-right">
+                    <p className="text-gray-600 text-sm">Time</p>
+                    <p className="font-medium">{flightData.departure_time}</p>
+                  </div>
+                </div>
+                
+                <div className="mb-4">
+                  <p className="text-gray-600 text-sm">Passenger</p>
+                  <p className="font-medium">{`${user?.fname} ${user?.lname}`}</p>
+                </div>
+                
+                <div className="border-t pt-4 mt-4">
+                  <div className="flex justify-between mb-2">
+                    <span className="text-gray-600">Ticket Price</span>
+                    <span className="font-medium">${cabinClass === 'economy' ? `${flightData.cost_eco}` :
+                        cabinClass === 'business' ? `${flightData.cost_buis}` :
+                        cabinClass === 'first' ? `${flightData.cost_first_class}` :
+                        cabinClass === 'premium_economy' ? `${flightData.cost_pre_eco}`: "N/A"}</span>
+                  </div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-gray-600">Taxes & Fees</span>
+                    <span className="font-medium">{cabinClass === 'economy' ?`${75}` :
+                        cabinClass === 'business' ? `${150}` :
+                        cabinClass === 'first' ? `${120}` :
+                        cabinClass === 'premium_economy' ? `${100}`: "N/A"}</span>
+                  </div>
+                  <div className="flex justify-between pt-2 border-t mt-2">
+                    <span className="font-semibold">Total</span>
+                    <span className="font-bold text-xl">${cabinClass === 'economy' ?`${flightData.cost_eco+75}` :
+                        cabinClass === 'business' ? `${flightData.cost_eco+150}` :
+                        cabinClass === 'first' ? `${flightData.cost_eco+120}` :
+                        cabinClass === 'premium_economy' ? `${flightData.cost_eco+100}`: "N/A"}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Payment Form */}
+            <div className="md:col-span-2">
+              <div className="bg-white p-6 rounded-lg shadow-md mb-10">
+                <h2 className="text-xl font-semibold mb-6 border-b pb-2">Payment Method</h2>
+                
+                <div className="flex flex-wrap mb-6 bg-gray-100 rounded-lg p-1">
+                  <button
+                    className={`flex-1 py-2 text-center rounded-md ${paymentMethod === 'creditCard' ? 'bg-blue-500 text-white' : 'text-gray-600'}`}
+                    onClick={() => setPaymentMethod('creditCard')}
+                  >
+                    Credit Card
+                  </button>
+                  <button
+                    className={`flex-1 py-2 text-center rounded-md ${paymentMethod === 'paypal' ? 'bg-blue-500 text-white' : 'text-gray-600'}`}
+                    onClick={() => setPaymentMethod('paypal')}
+                  >
+                    PayPal
+                  </button>
+                  <button
+                    className={`flex-1 py-2 text-center rounded-md ${paymentMethod === 'googlePay' ? 'bg-blue-500 text-white' : 'text-gray-600'}`}
+                    onClick={() => setPaymentMethod('googlePay')}
+                  >
+                    Google Pay
+                  </button>
+                </div>
+                
+                {paymentMethod === 'creditCard' && (
+                  <form className="space-y-4">
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">Card Number</label>
+                      <input
+                        type="text"
+                        name="number"
+                        placeholder="XXXX XXXX XXXX XXXX"
+                        value={cardDetails.number}
+                        onChange={handleCardDetailsChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">Name on Card</label>
+                      <input
+                        type="text"
+                        name="name"
+                        placeholder="Enter name as it appears on card"
+                        value={cardDetails.name}
+                        onChange={handleCardDetailsChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-gray-700 text-sm font-medium mb-1">Expiry Date</label>
+                        <input
+                          type="text"
+                          name="expiry"
+                          placeholder="MM/YY"
+                          value={cardDetails.expiry}
+                          onChange={handleCardDetailsChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          required
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-gray-700 text-sm font-medium mb-1">CVV</label>
+                        <input
+                          type="text"
+                          name="cvv"
+                          placeholder="XXX"
+                          value={cardDetails.cvv}
+                          onChange={handleCardDetailsChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </form>
+                )}
+                
+                {paymentMethod === 'paypal' && (
+                  <div className="py-6 text-center">
+                    <p className="mb-4 text-gray-600">You will be redirected to PayPal to complete your payment.</p>
+                    <img src="/images/paypal-logo.png" alt="PayPal" className="h-10 mx-auto" />
+                  </div>
+                )}
+                
+                {paymentMethod === 'googlePay' && (
+                  <div className="py-6 text-center">
+                    <p className="mb-4 text-gray-600">You will be redirected to Google Pay to complete your payment.</p>
+                    <img src="/images/googlepay-logo.png" alt="Google Pay" className="h-10 mx-auto" />
+                  </div>
+                )}
+                
+                <div className="mt-8">
+                  <button
+                    onClick={handleConfirmBooking}
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-lg font-medium hover:shadow-lg transition duration-300 flex items-center justify-center"
+                  >
+                    {isLoading ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                      </>
+                    ) : (
+                      `Pay $${cabinClass === 'economy' ?`${flightData.cost_eco+75}` :
+                        cabinClass === 'business' ? `${flightData.cost_eco+150}` :
+                        cabinClass === 'first' ? `${flightData.cost_eco+120}` :
+                        cabinClass === 'premium_economy' ? `${flightData.cost_eco+100}`: "N/A"} and Confirm Booking`
+                    )}
+                  </button>
+                </div>
+                
+                <div className="mt-4 text-center text-sm text-gray-500">
+                  <p>By confirming, you agree to our Terms & Conditions and Privacy Policy.</p>
+                </div>
+              </div>
+            </div>
+         
+          </div>
+          <Footer/></>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default TicketBooking;
