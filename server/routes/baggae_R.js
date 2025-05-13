@@ -39,10 +39,28 @@ router.get("/show",authenicator,(req,res)=>{
     if(!user_id){
         return res.json({message:"You must be a user to access this"})
     }
-    const sql=`SELECT ba.id as baggae_id,ba.booking_id ,ba.weight, ba.size_tag,ba.extra_charge,b.flight_id, b.flight_schedule ,fs.flight_date, fs.departure_time, fs.arrival_time, fs.origin, fs.destination 
-    FROM baggage ba, bookings b, flight_schedules fs 
-    WHERE ba.booking_id=b.id AND b.flight_schedule=fs.id AND b.user_id=? `
-
+    const sql=`SELECT 
+        ba.id AS baggage_id,  -- Baggage ID
+        ba.booking_id,        -- Booking ID
+        ba.weight,            -- Baggage weight
+        ba.size_tag,          -- Baggage size tag
+        ba.extra_charge,      -- Extra charge for baggage
+        b.flight_id,          -- Flight ID
+        b.flight_schedule,    -- Flight schedule ID
+        fs.flight_date,       -- Flight date
+        fs.departure_time,    -- Departure time
+        fs.arrival_time,      -- Arrival time
+        fs.origin,            -- Flight origin
+        fs.destination        -- Flight destination
+    FROM 
+        baggage ba
+    JOIN 
+        bookings b ON ba.booking_id = b.id  -- Join baggage with bookings
+    JOIN 
+        flight_schedules fs ON b.flight_schedule = fs.id  -- Join bookings with flight_schedules
+    WHERE 
+        b.user_id = ?;  -- Filter by user ID`
+    
     baggage_tb.query(sql,[user_id],(err,result)=>{
         if(err){
             console.log(err);

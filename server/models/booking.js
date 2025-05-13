@@ -17,7 +17,7 @@ const sql=`CREATE TABLE IF NOT EXISTS bookings (
     flight_id INT NOT NULL,
     seat_no INT NOT NULL,
     flight_schedule INT NOT NULL,
-
+    cabin_class ENUM('economy', 'business', 'first', 'premium_economy') NOT NULL DEFAULT 'economy',
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (flight_id) REFERENCES flights(id) ON DELETE CASCADE,
     FOREIGN KEY (flight_schedule) REFERENCES flight_schedules(id) ON DELETE CASCADE, 
@@ -29,4 +29,14 @@ booking_tb.query(sql,(error)=>{
     }
 })
 
+// 2) Promise wrapper
+export function queryAsync(sql, params) {
+    return new Promise((resolve, reject) => {
+      booking_tb.query(sql, params, (err, rows) => {
+        if (err) return reject(err);
+        resolve(rows);
+      });
+    });
+  }
+  
 export default booking_tb;

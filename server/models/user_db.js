@@ -14,12 +14,17 @@ user_tb.connect((err)=>{
 
 const sql= ` CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
     fname VARCHAR(50) NOT NULL,
     lname VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL UNIQUE,
     passport_no VARCHAR(9) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    nationality VARCHAR(10) ,
+    passportImg VARCHAR(255) ,
+    DOB DATE ,
+    phoneNo VARCHAR(13),
+    cnicNo VARCHAR(13),
+    cnicImg VARCHAR(255)
     );` ;
     
 user_tb.query(sql,(error)=>{

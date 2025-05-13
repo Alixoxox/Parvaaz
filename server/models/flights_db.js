@@ -16,7 +16,7 @@ const sql=`CREATE TABLE IF NOT EXISTS flights (
     id INT AUTO_INCREMENT PRIMARY KEY,
     airline_id INT NOT NULL,
     flight_code VARCHAR(10) NOT NULL UNIQUE,
-    total_seats INT NOT NULL,
+    total_seats INT NOT NULL DEFAULT 200,
     FOREIGN KEY (airline_id) REFERENCES airlines(id) ON DELETE CASCADE
 );`
 
