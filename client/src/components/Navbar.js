@@ -108,8 +108,8 @@ function Navbar() {
   };
 return (
     <nav className="navbar fixed top-0 left-0 w-full z-50 bg-gray-700 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-14">
+      <div className="max-w-7xl mx-auto ">
+        <div className="flex items-center justify-evenly h-14">
           {/* Logo and Brand */}
           <div className="flex items-center space-x-4">
             <NavLink to="/" className="text-xl font-bold uppercase">
@@ -118,7 +118,7 @@ return (
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center space-x-4 mx-4">
+          <div className="flex-1 hidden md:flex items-center justify-evenly ">
             {!isHomePage && <NavLink to="/">Home</NavLink>}
             <NavLink to="/book">Book</NavLink>
             <NavLink to="/where-we-fly">Where We Fly</NavLink>
@@ -140,15 +140,14 @@ return (
           </div>
 
           {/* Search Bar (Desktop) */}
-          <div className="hidden md:flex items-center ml-auto">
-            <form onSubmit={handleSearch} className="flex items-center">
+          <div className="flex-1 hidden md:hidden lg:flex items-center ml-auto w-full lg:max-w-md">
+                        <form onSubmit={handleSearch} className="flex items-center w-full">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search content or flights (e.g., From, To, Date)"
-                className="px-3 py-1 rounded-l-md text-black focus:outline-none"
-              />
+                placeholder="Search content ..."
+                className="flex-grow flex-shrink min-w-0 px-3 py-1 rounded-l-md text-black focus:outline-none"              />
               <button
                 type="submit"
                 className="bg-gray-600 text-white px-3 py-1 rounded-r-md hover:bg-gray-500"
@@ -187,12 +186,12 @@ return (
             aria-labelledby="mobile-menu-button"
           >
             {/* Mobile Search Bar */}
-            <form onSubmit={handleSearch} className="py-2">
+            <form onSubmit={handleSearch} className="py-2 ">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search flights..."
+                placeholder="Search Content..."
                 className="w-full px-3 py-1 rounded-l-md text-black focus:outline-none"
               />
               <button
