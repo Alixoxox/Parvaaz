@@ -147,7 +147,7 @@ const AdminDashboard = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-100 mt-[8.5vh] lg:mt-[6vh] xl:mt-[6.5vh] ">
+      <div className="min-h-screen bg-gray-100 mt-[8.2vh] lg:mt-[7vh] xl:mt-[6vh] ">
         {/* Horizontal Admin Navigation */}
         <nav className="bg-primary shadow-md w-full px-6 py-4">
   <div className="flex items-center justify-between px-8 md:px-0 lg:justify-evenly">
