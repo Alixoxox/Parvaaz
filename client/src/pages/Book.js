@@ -23,7 +23,6 @@ function Book() {
     setCabinClass,
     multiCity, 
     setMultiCity,
-    setFlightData
   } = useApp();
 
   // Local state for UI management
@@ -33,17 +32,7 @@ function Book() {
   const [showFromDropdown, setShowFromDropdown] = useState(false);
   const [showToDropdown, setShowToDropdown] = useState(false);
   const navigate = useNavigate();
-
-  // List of cities with international airports
-  const cities = [
-    'New York', 'London', 'Dubai', 'Singapore', 'Tokyo', 'Paris', 'Hong Kong', 'Shanghai', 'Sydney', 'Los Angeles', 'Toronto', 'Seoul', 'Bangkok', 'Istanbul', 'Frankfurt', 'Amsterdam','Doha', 'Miami', 'Delhi', 'Mumbai', 'São Paulo', 'Mexico City', 'Johannesburg', 'Rome', 'Madrid', 'Barcelona', 'Moscow', 'Beijing', 'Jakarta', 'Manila', 'Kuala Lumpur', 'Cairo', 'Cape Town', 'Vancouver', 'Chicago', 'San Francisco', 'Dallas', 'Atlanta', 'Houston','Rio de Janeiro', 'Buenos Aires', 'Lima', 'Bogotá', 'Santiago', 'Nairobi', 'Lagos', 'Abu Dhabi', 'Riyadh', 'Tel Aviv', 'Athens', 'Vienna', 'Zurich', 'Geneva', 'Stockholm', 'Oslo', 'Copenhagen', 'Helsinki', 'Dublin', 'Edinburgh', 'Lisbon', 'Prague', 'Budapest', 'Warsaw', 'Kyiv', 'Brussels', 'Munich', 'Milan', 'Venice', 'Florence', 'Naples', 'Ho Chi Minh City', 'Hanoi', 'Taipei', 'Melbourne', 'Brisbane', 'Perth', 'Auckland', 'Christchurch', 'Wellington', 'Montreal', 'Calgary', 'Ottawa', 'Boston', 'Washington DC', 'Seattle', 'Denver', 'Las Vegas', 'Orlando', 'Phoenix', 'Austin', 'San Diego', 'karachi', 'Lahore', 'Dhaka', 'Colombo', 'Kathmandu', 'Yangon', 'Phnom Penh', 'Vientiane','Muscat', 'Kuwait City', 'Amman', 'Beirut', 'Baghdad', 'Damascus', 'Sanaa', 'Accra','Addis Ababa', 'Algiers', 'Casablanca', 'Tunis', 'Tripoli', 'Harare', 'Luanda', 'Kigali','Dar es Salaam', 'Kampala', 'Antananarivo', 'Maputo', 'Port Louis', 'Victoria',"islamabad"
-  ];
-
-  // Update flight data in context whenever relevant state changes
-  useEffect(() => {
-    setFlightData({ tripType, fromCity, toCity, departDate, returnDate, passengers, cabinClass, multiCity });
-  }, [tripType, fromCity, toCity, departDate, returnDate, passengers, cabinClass, multiCity, setFlightData]);
-
+  
   // Handle changes for 'from' and 'to' input fields
   const handleCityInput = (field, value) => {
     if (field === 'from') {
@@ -96,7 +85,7 @@ function Book() {
       setFromSuggestions(filtered);
       setShowFromDropdown(value.length > 0 && filtered.length > 0);
     } else if (name === 'to') {
-      const filtered = cities.filter(city =>
+      const filtered = Object.keys(cityCodes).filter(city =>
         city.toLowerCase().includes(value.toLowerCase())
       );
       setToSuggestions(filtered);
@@ -111,18 +100,9 @@ function Book() {
     setMultiCity([...multiCity, { from: '', to: '', date: '' }]);
   };
 
-  // // Handle passenger details update
-  // const handlePassengerDetails = (index, field, value) => {
-  //   const newDetails = [...passengerDetails];
-  //   newDetails[index] = { ...newDetails[index], [field]: value };
-  //   setPassengerDetails(newDetails);
-  // };
-
-  // Form submission handler
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation
     if (tripType === 'roundtrip' && !returnDate) {
       alert("Please select a return date for roundtrip.");
       return;
@@ -134,28 +114,12 @@ function Book() {
         return;
       }
     } else if (tripType === 'multicity') {
-      for (const city of multiCity) {
-        if ( !Object.keys(cityCodes).includes((city.to).toLowerCase())) { 
-          alert('Please select valid cities from the list.');
-          return;
-        }
+      const validCities = Object.keys(cityCodes).map(city => city.toLowerCase());
+      if (!validCities.includes(fromCity.toLowerCase()) || !validCities.includes(toCity.toLowerCase())) {
+        alert('Please select valid cities from the list.');
+        return;
       }
     }
-  //   // If there are multiple passengers but details not filled in
-  //   if (passengers > 1 && passengerDetails.length !== passengers) {
-  //     // Initialize passenger details array
-  //     const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
-  //     const newDetails = Array.from({ length: passengers }, (_, i) => ({
-  //       name: i === 0 ? currentUser?.name || '' : '',
-  //       email: i === 0 ? currentUser?.email || '' : '',
-  //       passport: i === 0 ? currentUser?.passport || '' : '',
-  //       nationality: i === 0 ? currentUser?.nationality || '' : '',
-  //     }));
-  //     setPassengerDetails(newDetails);
-  //     return;
-  //   }
-
-    // Navigate to flights page
     navigate('/flights');
   };
 
@@ -256,6 +220,7 @@ function Book() {
                     type="date"
                     name="departureDate"
                     value={departDate}
+                    required
                     onChange={(e) => setDepartDate(e.target.value)}
                     className="input w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                  

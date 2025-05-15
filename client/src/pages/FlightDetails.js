@@ -3,14 +3,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useApp } from '../context/parvaaz';
-import { calculateDuration } from '../utils/aviationstack';
+import { calculateDuration, getCityFromIATA } from '../utils/aviationstack';
+import { MdFlightTakeoff,MdFlightLand } from "react-icons/md";
+
 function FlightDetails() {
   const navigate = useNavigate();
   const location = useLocation();
-  const {user,selectedFlight,cabinClass,setUser}=useApp()
+  const {user,selectedFlight,cabinClass,setUser,tripType,startFlightD}=useApp()
   const formattedDate =  user?.DOB ? new Date(user.DOB).toISOString().split('T')[0] : '';
   const flightInfo=location.state?.data || selectedFlight ;
- 
+  const multiplier = tripType?.toLowerCase().includes("round") ? 2 : 1;
   if (!flightInfo) return <div className="p-4 text-red-600">No flight information available.</div>
 
   const handleChange = (e) => {
@@ -20,6 +22,9 @@ function FlightDetails() {
       [name]: value
     }));
   };
+  useEffect(()=>{
+    console.log(selectedFlight,flightInfo)
+  },[])
 
   const handleContinue = () => {
     console.log(user)
@@ -63,11 +68,12 @@ function FlightDetails() {
                 </div>
               </div>
               
-              <div className="flex items-start mb-6">
+              <div className="flex items-start mb-3">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-500">Departure</p>
-                  <p className="text-xl font-semibold">{flightInfo.departure_time}</p>
-                  <p className="text-base">{flightInfo.origin.toUpperCase()}</p>
+                  <div className='flex'> <p className="text-md text-gray-500">Flight Departure </p> <MdFlightTakeoff className='ms-1 text-2xl'/> </div>
+                 
+                  <p className="text-xl font-semibold">{flightInfo.departure_time.slice(0,5)}</p>
+                  <p className="text-base capitalize">{getCityFromIATA(flightInfo.origin)}</p>
                   <p className="text-sm text-gray-500">{flightInfo.flight_date.slice(0,10)}</p>
                 </div>
                 
@@ -84,14 +90,51 @@ function FlightDetails() {
                 
                 </div>
                 
+                
                 <div className="flex-1 text-right">
                   <p className="text-sm text-gray-500">Arrival</p>
-                  <p className="text-xl font-semibold">{flightInfo.arrival_time}</p>
-                  <p className="text-base">{flightInfo.destination}</p>
+                  <p className="text-xl font-semibold">{flightInfo.arrival_time.slice(0,5)}</p>
+                  <p className="text-base capitalize">{getCityFromIATA(flightInfo.destination)}</p>
                 </div>
               </div>
+              {tripType==="roundtrip" && startFlightD &&(
+                <div className="flex items-start mb-3 pt-4 border-t">
+                  
+                <div className="flex-1">
+                  <div className='flex'> <p className="text-md text-gray-500">Flight Arrival </p> <MdFlightLand className='ms-1 text-2xl'/> </div>
+                 
+                  <p className="text-xl font-semibold">{startFlightD.departure_time.slice(0,5)}</p>
+                  <p className="text-base capitalize">{getCityFromIATA(startFlightD.origin)}</p>
+                  <p className="text-sm text-gray-500">{startFlightD.flight_date.slice(0,10)}</p>
+                </div>
+                
+                <div className="flex flex-col items-center px-4">
+                  <div className="w-full flex items-center mb-1">
+                    <div className="h-1 w-2 bg-gray-300 rounded-full"></div>
+                    <div className="h-px flex-1 bg-gray-300"></div>
+                    <div className="h-1 w-2 bg-gray-300 rounded-full"></div>
+                  </div>
+                  <span className="text-sm text-gray-500">{calculateDuration(startFlightD.departure_time,startFlightD.arrival_time)}</span>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {startFlightD.stops === 0 ? 'Non-stop' : `${startFlightD.stops} stop`}
+                  </div>
+                
+                </div>
+                
+                
+                <div className="flex-1 text-right">
+                  <p className="text-sm text-gray-500">Arrival</p>
+                  <p className="text-xl font-semibold">{startFlightD.arrival_time.slice(0,5)}</p>
+                  <p className="text-base capitalize">{getCityFromIATA(startFlightD.destination)}</p>
+                </div>
+              </div>
+              )}
               
               <div className="border-t border-b py-4 my-4">
+              <div className="flex justify-between mb-2">
+                  <span className="text-gray-600 capitalize">Flight Type:</span>
+                  <span className="font-medium capitalize">{tripType}</span>
+                </div>
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-600 capitalize">Cabin Class:</span>
                   <span className="font-medium capitalize">{cabinClass}</span>
@@ -100,13 +143,20 @@ function FlightDetails() {
                   <span className="text-gray-600">Aircraft:</span>
                   <span className="font-medium">{flightInfo.flight_code}</span>
                 </div>
+                  <div className="flex justify-between mb-2">
+                  <span className="text-gray-600 capitalize">Each Flight Cost:</span>
+                  <span className="font-medium capitalize">${cabinClass === 'economy' ? `${flightInfo.cost_eco}` :
+                        cabinClass === 'business' ? `${flightInfo.cost_buis}` :
+                        cabinClass === 'first' ? `${flightInfo.cost_first_class}` :
+                        cabinClass === 'premium_economy' ? `${flightInfo.cost_pre_eco}`: "N/A"}</span>
+                </div>
+               
                 <div className="flex justify-between">
                   <span className="text-gray-600">Baggage Allowance:</span>
                   <div className='flex flex-col text-right'>
                   <span className="font-medium">20kg checked </span>
                   <span className="font-medium">7kg cabin </span>
                   </div>
-                 
                 </div>
               </div>
               
@@ -126,12 +176,12 @@ function FlightDetails() {
               
               <div className="text-right">
                 <p className="text-sm text-gray-500">Total Price</p>
-                <p className="text-3xl font-bold text-blue-600">${ cabinClass === 'economy' ? `${flightInfo.cost_eco}` :
-                        cabinClass === 'business' ? `${flightInfo.cost_buis}` :
-                        cabinClass === 'first' ? `${flightInfo.cost_first_class}` :
-                        cabinClass === 'premium_economy' ? `${flightInfo.cost_pre_eco}`: "N/A"}</p>
-                  <p className="text-red-400 font-bold text-sm">Non-Refundable</p>
+                <p className="text-3xl font-bold text-blue-600">${ cabinClass === 'economy' ? `${flightInfo.cost_eco* multiplier}` :
+                        cabinClass === 'business' ? `${flightInfo.cost_buis* multiplier}` :
+                        cabinClass === 'first' ? `${flightInfo.cost_first_class* multiplier}` :
+                        cabinClass === 'premium_economy' ? `${flightInfo.cost_pre_eco* multiplier}`: "N/A"}</p>
 
+                  <p className="text-red-400 font-bold text-sm">Non-Refundable</p>
               </div>
             </div>
           </div>

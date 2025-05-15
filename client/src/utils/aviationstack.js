@@ -40,3 +40,10 @@ export const convertTimeName = (time) => {
   }
   return "Night";
 };
+
+export const getCityFromIATA = (iataCode) => {
+  let a= iataCode.toUpperCase()
+  const entries = Object.entries(iataCodes);
+  const match = entries.find(([city, code]) => code === a.toUpperCase());
+  return match ? match[0] : "Unknown city";
+};

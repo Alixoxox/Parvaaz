@@ -147,10 +147,10 @@ const AdminDashboard = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-100 mt-[5vh]">
+      <div className="min-h-screen bg-gray-100 mt-[8.5vh] lg:mt-[6vh] xl:mt-[6.5vh] ">
         {/* Horizontal Admin Navigation */}
         <nav className="bg-primary shadow-md w-full px-6 py-4">
-  <div className="flex items-center justify-between lg:justify-evenly ">
+  <div className="flex items-center justify-between px-8 md:px-0 lg:justify-evenly">
     {/* Title */}
     <h1 className="text-white text-2xl font-bold ">Admin</h1>
 

@@ -112,7 +112,7 @@ return (
         <div className="flex items-center justify-evenly h-14">
           {/* Logo and Brand */}
           <div className="flex items-center space-x-4">
-            <NavLink to="/" className="text-xl font-bold uppercase">
+            <NavLink to="/" className="text-xl font-extrabold uppercase">
               Parvaaz
             </NavLink>
           </div>
