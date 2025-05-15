@@ -59,6 +59,12 @@ export async function handleRoundtripBooking(req, res) {
   } = req.body;
   const userId = req.user.id;
 
+  console.log( schedule_id, // outbound schedule
+    returnDate, // e.g. "2025-05-20"
+    fromCity, // e.g. "Karachi"
+    toCity, // e.g. "Islamabad"
+    cabin_class, // e.g. "economy"
+    passengers)
   try {
     await queryAsync("START TRANSACTION");
 
@@ -71,7 +77,7 @@ export async function handleRoundtripBooking(req, res) {
       passengers
     );
     const outSeats = await assignSeatNumbers(schedule_id, passengers);
-
+    console.log(outSeats)
     // ← NEW: capture bookingIds for outbound
     const outBookingIds = await createBookingEntries(
       outboundSched,
@@ -80,16 +86,19 @@ export async function handleRoundtripBooking(req, res) {
       outSeats
     );
     await updateSeatCounts(schedule_id, cabin_class, passengers);
-
+    const returnDateOnly = returnDate.split("T")[0];
+    console.log("Looking for returnDateOnly:", returnDateOnly, toCity, fromCity);
     // 2) FIND RETURN leg schedule by date + flipped cities
+
     const returnRows = await queryAsync(
       `SELECT * 
            FROM flight_schedules 
           WHERE flight_date = ? 
-            AND origin      = ? 
+            AND origin = ? 
             AND destination = ?`,
-      [returnDate, toCity, fromCity]
+            [returnDateOnly, toCity, fromCity]
     );
+    console.log("GOT FLIGHT data",returnRows)
     if (returnRows.length === 0) {
       throw new Error(
         `No return flight on ${returnDate} from ${toCity} to ${fromCity}`
@@ -105,7 +114,7 @@ export async function handleRoundtripBooking(req, res) {
       passengers
     );
     const inSeats = await assignSeatNumbers(inboundSched.id, passengers);
-
+    console.log('GOT SEATS',inSeats)
     // ← NEW: capture bookingIds for inbound
     const inBookingIds = await createBookingEntries(
       inboundSched,
@@ -128,6 +137,7 @@ export async function handleRoundtripBooking(req, res) {
   }
 }
 router.post("/new/roundtrip", authenicator, handleRoundtripBooking);
+
 //cancel or delete booking
 router.delete("/delete", authenicator, (req, res) => {
   const user_id = req.user.id;
