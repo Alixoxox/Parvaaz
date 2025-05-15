@@ -110,7 +110,9 @@ function FlightSearch() {
       } else {
         console.warn("No matching departure flight found.");
       }
-      setselectedFlight(matchingDeparture||clickedFlight);
+      setselectedFlight(matchingDeparture);
+    }else{
+      setselectedFlight(clickedFlight)
     }
   
     // 3. Navigate to details page with the clicked flight
