@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 const Help = () => {
@@ -8,7 +8,8 @@ const Help = () => {
     subject: '',
     message: ''
   });
-
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {

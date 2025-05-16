@@ -38,6 +38,7 @@ const Booking = () => {
     };
     
     fetchBookings();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const handleDeleteBooking = async (id) => {

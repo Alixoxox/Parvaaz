@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 function Planning() {
   const navigate=useNavigate()
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
@@ -58,7 +60,7 @@ function Planning() {
       
       {/* Call to Action */}
       <div className="bg-[#1a1a1a] py-12 px-4 text-white text-center">
-、区        <div className="max-w-3xl mx-auto">
+              <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold mb-4 text-white">Start Planning Now</h2>
           <p className="text-lg mb-6">Use our tools to create your ideal trip and book flights today.</p>
           <button 

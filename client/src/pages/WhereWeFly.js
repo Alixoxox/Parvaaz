@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 function WhereWeFly() {
   const navigate=useNavigate()
   const [activeTab, setActiveTab] = useState('partners');
-  
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   const navigateToDestination = (destination) => {
     const destinationWebsites = {
       'Dubai': 'https://www.visitdubai.com/',

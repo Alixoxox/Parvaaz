@@ -24,7 +24,8 @@ const LoginSignup = () => {
   const [nationality,setnationality]=useState("")
   
   const provider = new GoogleAuthProvider();
-
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSignup) {

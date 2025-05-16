@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -15,7 +15,8 @@ function FlightDetails() {
   const flightInfo=location.state?.data || selectedFlight ;
   const multiplier = tripType?.toLowerCase().includes("round") ? 2 : 1;
   if (!flightInfo) return <div className="p-4 text-red-600">No flight information available.</div>
-
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser(prev => ({

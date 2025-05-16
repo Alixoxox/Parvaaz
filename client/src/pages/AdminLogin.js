@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -11,7 +11,8 @@ const AdminLogin = () => {
   const {setAdmin}=useApp()
   const [admincred,setadmincred]=useState({username:"",password:""})
   const [loading, setLoading] = useState(false);
-
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);

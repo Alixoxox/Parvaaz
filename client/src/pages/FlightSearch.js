@@ -59,6 +59,7 @@ function FlightSearch() {
     };
     
     fetchFlights();
+    window.scrollTo({ top: 0, behavior: "smooth" });(0,0)
   }, [ cabinClass, passengers, tripType]);
   
   // Handle manual search button click
