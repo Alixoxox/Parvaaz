@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import { useApp } from "../context/parvaaz";
 import { bookFlight } from "../utils/flightService";
 import { getCityFromIATA } from "../utils/aviationstack";
+import { toast } from "react-toastify";
 function TicketBooking() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const [bookingRef2,setBookingRef2]=useState(null)
     if (!user) {
       navigate("/login", { replace: true });
       setIsBooked(false);
-      alert("You must be an active user first");
+      toast.warn("You must be an active user first");
     } else {
       const bookit = async () => {
         try {
@@ -63,14 +64,14 @@ const [bookingRef2,setBookingRef2]=useState(null)
           console.log(data)
           // Handle failed booking
           if (data.error?.startsWith( `No return flight on`)||data.message === "Failed to book flight") {
-            alert(data.error||data.message);
+            toast.warn(data.error||data.message);
             setIsBooked(false); // Don't show booking page if booking fails
             setIsLoading(false); // stop loading
             return; // Stop further execution
           }
           //handle round flight booking
           if(data.inbound || data.outbound){
-            alert(data.message);
+            toast.info(data.message);
             setroundD(data); //for seats {oubound,inbound}
             setBookingReference(data.outbound?.bookingIds?.map((id) => "PV" + id));//flight 1
             setBookingRef2(data.inbound?.bookingIds.map((id)=>"PV"+id))//flight2
@@ -78,13 +79,13 @@ const [bookingRef2,setBookingRef2]=useState(null)
             return
           }
           // If booking is successful, update state
-          alert(data.message || data.error);
+          toast.success(data.message || data.error);
           setseatBooked(data.seats);
           setIsBooked(true); // Only set to true if the booking succeeds
           setBookingReference(data.bookingIds?.map((id) => "PV" + id));
         } catch (error) {
           console.error("Booking failed: ", error);
-          alert("An error occurred during booking.");
+          toast.warn("An error occurred during booking.");
           setIsBooked(false); // Make sure isBooked is false on error
         } finally {
           setIsLoading(false); // Always reset loading state

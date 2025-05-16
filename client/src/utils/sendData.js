@@ -36,7 +36,7 @@ export const createUser=async(name,dob,nationality,passport_no,passportScan,emai
         return reply.user;
     } catch (err) {
         console.log(err);
-        return { message: "An error occurred",err };
+        return { message: "An error occurred"};
     }
 };
 

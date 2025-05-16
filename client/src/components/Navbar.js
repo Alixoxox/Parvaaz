@@ -3,6 +3,7 @@ import { Link, useLocation,useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useApp } from '../context/parvaaz';
+import { toast } from 'react-toastify';
 // Reusable NavLink component
 const NavLink = ({ to, children, onClick, className = '' }) => (
   <Link
@@ -73,17 +74,17 @@ function Navbar() {
     try {
       setUser(null);
       localStorage.removeItem("authtoken")
+      toast.success("Signed Out successfully!")
       toggleMobileMenu();
     } catch (error) {
       console.error('Sign-out failed:', error);
-      alert('Failed to sign out. Please try again.');
+      toast.warn('Failed to sign out. Please try again.');
     }
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-
     const query = searchQuery.toLowerCase().trim();
 
     // Check for flight search pattern (e.g., "from, to, date")
@@ -97,6 +98,23 @@ function Navbar() {
       for (const item of searchableContent) {
         if (item.keywords.some(keyword => query.includes(keyword.toLowerCase()))) {
           matchedRoute = item.route;
+        if (matchedRoute === '/admin-dashboard') {
+          const adminToken = localStorage.getItem('adminToken');
+          if (!adminToken) {
+            navigate('/admin-login');
+            setSearchQuery('');
+            toggleMobileMenu();
+            return;
+          }
+        } else if (matchedRoute === '/user-profile') {
+          const userToken = localStorage.getItem('authToken');
+          if (!userToken) {
+            navigate('/login');
+            setSearchQuery('');
+            toggleMobileMenu();
+            return;
+          }
+        }
           break;
         }
       }

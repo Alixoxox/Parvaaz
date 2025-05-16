@@ -28,7 +28,8 @@ import KnowHowToTravel from './pages/KnowHowToTravel';
 import RulesNotices from './pages/RulesNotices';
 import { useApp } from './context/parvaaz';
 import { updateData } from './utils/getData';
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   // const [user] = useAuthState(auth);
   const {user,setUser}=useApp()
@@ -51,6 +52,7 @@ function App() {
 
   return (
     <Router>
+      <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginSignup />} />

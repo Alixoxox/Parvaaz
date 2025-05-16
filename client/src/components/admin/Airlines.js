@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CreateAirline, RemoveAirline, ShowAirlines } from '../../utils/admin_stuff.js';
+import { toast } from 'react-toastify';
 
 const Airlines = () => {
   const [airlines, setAirlines] = useState([])
@@ -20,9 +21,8 @@ const Airlines = () => {
 
 const handleAddAirline = async (e) => {
   e.preventDefault();
-  console.log(newAirline);  
   const data = await CreateAirline(newAirline.airline_code, newAirline.name, newAirline.country, newAirline.contact, newAirline.info);
-  alert(data?.message);
+  toast.success(data?.message)
   setNewAirline({
     airline_code: '',
     name: '',
@@ -30,15 +30,16 @@ const handleAddAirline = async (e) => {
     contact: '',
     info: ''
   });
-  const newEntry = { id: airlines.length + 1, ...newAirline };
-  setAirlines([...airlines, newEntry]);
+  const details=await ShowAirlines()
+  setAirlines(details);
 };
 const handleDeleteAirline = async (id) => {
     const reply=await RemoveAirline(id);
     if(reply.message==='Airline Deleted successfully'){
+      toast.success(reply.message)
       setAirlines(airlines.filter(a => a.id !== id));
     }else{
-      alert(data.message)
+      toast.warn(reply.message)
     }
   
 };
@@ -100,7 +101,7 @@ const handleDeleteAirline = async (id) => {
           </tr>
         </thead>
         <tbody>
-          {airlines.map((airline) => (
+          {Array.isArray(airlines) && airlines.length>0 ?(airlines.map((airline) => (
             <tr key={airline.id} className="border-b text-center">
               <td className="px-4 py-2">{airline.airline_code}</td>
               <td className="px-4 py-2 capitalize">{airline.name}</td>
@@ -117,7 +118,9 @@ const handleDeleteAirline = async (id) => {
               </td>
               
             </tr>
-          ))}
+          ))):( <tr>
+            <td colSpan="8" className="px-6 py-4 text-center">No airlines found</td>
+          </tr>)}
         </tbody>
       </table>
     </div>

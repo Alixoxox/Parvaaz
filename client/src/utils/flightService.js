@@ -1,4 +1,5 @@
 // src/services/flightService.js
+import { toast } from 'react-toastify';
 import { getCityFromIATA, toIata } from './aviationstack';
 export const searchFlights = async (fromCity, toCity, departDate, returnDate, cabinClass, passengers, tripType) => {
   try {
@@ -48,7 +49,7 @@ export const searchFlights = async (fromCity, toCity, departDate, returnDate, ca
   export const bookFlight = async (schedule_id, flight_id, tripType, returnDate, FromCity, ToCity, cabin_class, passengers) => {
     try {
       if (tripType === 'roundtrip' && !returnDate) {
-        alert('Please select a return date before confirming a round-trip booking.');
+        toast.warn('Please select a return date before confirming a round-trip booking.');
         return;
       }
       passengers = Number(passengers);

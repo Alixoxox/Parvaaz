@@ -4,17 +4,16 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useApp } from '../context/parvaaz';
 import { loginadmin } from '../utils/admin_stuff.js';
+import { toast } from 'react-toastify';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const {setAdmin}=useApp()
   const [admincred,setadmincred]=useState({username:"",password:""})
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
     
     // Simulate authentication (replace with actual auth logic)
@@ -22,13 +21,14 @@ const AdminLogin = () => {
       if (admincred.username === 'admin' && admincred.password === 'admin123') {
         const data=await loginadmin(admincred.username,admincred.password)
         if(data.user){
+          toast.success("Logged in Successfully")
           setAdmin(admincred)
           navigate('/admin-dashboard');
         }else{
-          setError(data.message)
+          toast.warn(data.message)
         }
       } else {
-        setError('Invalid username or password');
+        toast.warn('Invalid username or password');
       }
       setLoading(false);
     }, 200);
@@ -43,13 +43,7 @@ const AdminLogin = () => {
             <h2 className="text-3xl font-bold text-primary">Admin Portal</h2>
             <p className="text-gray-600 mt-2">Sign in to access the admin dashboard</p>
           </div>
-          
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-              {error}
-            </div>
-          )}
-          
+        
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label htmlFor="username" className="block text-gray-700 font-medium mb-2">Username</label>
