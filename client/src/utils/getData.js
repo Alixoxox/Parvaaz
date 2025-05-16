@@ -93,5 +93,5 @@ export const getBookingHistory=async()=>{
     }
     }catch(err){
         console.log(err)
-        return {message:"An error Occoured",err}
+        return {message:"An error Occoured"}
 }}

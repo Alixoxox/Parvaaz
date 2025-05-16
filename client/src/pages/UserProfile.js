@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { updateImg, updateUser } from "../utils/sendData";
 import BookingCard from "../components/bookingCard";
 import { getBookingHistory } from "../utils/getData";
+import { toast } from "react-toastify";
 function UserProfile() {
   const navigate = useNavigate();
   const { user, setUser,bookingHistory,setbookingHistory,bookedAnchor} = useApp();
@@ -32,7 +33,7 @@ function UserProfile() {
     const fetchHistory=async()=>{
       const data=await getBookingHistory()
       if(data.message){
-        alert(data.message)
+        toast.warn(data.message)
       }
       console.log(data)
       if (Array.isArray(data)) {
@@ -80,18 +81,19 @@ function UserProfile() {
       if (user) {
         if (JSON.stringify(formData) !== JSON.stringify(user)) {
           const data = await updateUser(formData);
-          if (data.message) {
-            alert(data.message);
+          if (data.message==="Something went wrong please try later") {
+            toast.warn(data.message);
             console.log(data.message);
           }
           if (data.user) {
             setUser(data.user);
-            alert("Profile updated successfully!");
+            toast.success("Profile updated successfully!");
           }
         }
       }
     } catch (error) {
       console.error("Error updating profile:", error.message);
+      toast.warn("Something Went wrong updating user profile")
     }
   };
 
@@ -128,12 +130,12 @@ function UserProfile() {
         });
         const msg = await updateImg("passport", file);
         if (msg.success) {
-          alert(msg.success);
+          toast.success(msg.success);
         }
       }
     } catch (err) {
       console.log(err);
-      alert(err.message);
+      toast.warn(err.message);
     }
   };
 
@@ -152,12 +154,12 @@ function UserProfile() {
         });
         const msg = await updateImg("cnic", file);
         if (msg.success) {
-          alert(msg.success);
+          toast.success(msg.success);
         }
       }
     } catch (err) {
       console.log(err);
-      alert(err.message);
+      toast.warn(err.message);
     }
   };
 

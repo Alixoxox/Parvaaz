@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
 import "flatpickr/dist/themes/material_blue.css";
-import { createFlightRoute, ShowRoutes } from "../../utils/admin_stuff.js";
+import { createFlightRoute,  ShowFlights, ShowRoutes } from "../../utils/admin_stuff.js";
+import { toast } from "react-toastify";
 const Routes = () => {
-  const [error, setError] = useState("");
   const [flights, setFlights] = useState([]);
   useEffect(()=>{
     setTimeout(async()=>{
       const data=await ShowRoutes()
       if(data.message){
-        setError(data.message)
+        toast.warn(data.message)
       }else{
         setFlights(data)
       }
@@ -34,16 +34,14 @@ const Routes = () => {
     first_class_seats: "",
   });
 
-  
-
   const handleAddFlight = (e) => {
     e.preventDefault();
     setTimeout(async()=>{
     const data=await createFlightRoute(newFlight.flightNumber,newFlight.origin,newFlight.destination,newFlight.flight_date,newFlight.departure_time,newFlight.arrival_time, newFlight.cost_eco, newFlight.cost_pre_eco, newFlight.cost_buis, newFlight.cost_first_class, newFlight.economy_seats,newFlight.premium_economy_seats,newFlight.business_seats, newFlight.first_class_seats , newFlight.stops)
-      setError(data?.message)
+      toast.warn(data?.message)
+      const details=await ShowRoutes()
+      setFlights(details)
   },20)
-    const newId = flights.length + 1;
-    setFlights([...flights, { id: newId, ...newFlight }]);
     setNewFlight({
       flightNumber: "",
       origin: "",
@@ -61,26 +59,23 @@ const Routes = () => {
       business_seats: "",
       first_class_seats: "",
     });
-    setError("");
+    toast.success("Flight Added successfully!")
   };
-
-  const handleUpdateFlight = (id, updatedFlight) => {
-    setFlights(
-      flights.map((f) => (f.id === id ? { ...f, ...updatedFlight } : f))
-    );
-  };
-
-  const handleDeleteFlight = (id) => {
-    setFlights(flights.filter((f) => f.id !== id));
+  const handleDeleteFlight = async(id) => {
+    try{
+      await RemoveRoute(id)
+      const data=await ShowFlights()
+      setFlights(data);
+      toast.info("Successfully Deleted Flight")
+    }catch(err){
+      toast.warn(err.message)
+    }
   };
 
   return (
     <div className="p-4">
       <h2 className="text-3xl font-bold mb-6">Flight Routes</h2>
-      {error && (
-        <div className="bg-red-100 text-red-700 p-3 mb-4 rounded">{error}</div>
-      )}
-
+    
       <form
         onSubmit={handleAddFlight}
         className="mb-8 bg-white p-6 rounded-lg shadow-md"
@@ -291,7 +286,7 @@ const Routes = () => {
             </tr>
           </thead>
           <tbody>
-            {flights.map((f) => (
+            {Array.isArray(flights) && flights.length>0 ?(flights.map((f) => (
               <tr key={f.id} className="border-b text-center">
                 <td className="px-3 py-4">{f.id}</td>
                 <td className="px-3 py-4">{f.flightNumber}</td>
@@ -310,16 +305,6 @@ const Routes = () => {
                 <td className="px-3 py-4">{f.business_seats}</td>
                 <td className="px-3 py-4">{f.first_class_seats}</td>
                 <td className="px-3 py-4">
-                  {/* <button
-                    onClick={() => {
-                      const updated = prompt("New flight no:", f.flightNumber);
-                      if (updated)
-                        handleUpdateFlight(f.id, { flightNumber: updated });
-                    }}
-                    className="text-blue-600 hover:underline mr-2"
-                  >
-                    Edit
-                  </button> */}
                   <button
                     onClick={() => handleDeleteFlight(f.id)}
                     className="text-red-600 hover:underline"
@@ -328,7 +313,11 @@ const Routes = () => {
                   </button>
                 </td>
               </tr>
-            ))}
+            ))):(
+              <tr>
+  <td colSpan="17" className="px-6 py-4 text-center">No Flight Routes found</td>
+</tr>
+            )}
           </tbody>
         </table>
       </div>

@@ -409,7 +409,27 @@ export const RemoveFlight =async(flight_id)=>{
   return { message: "An error occurred. Please try again later." };
 }
 }
-
+export const RemoveRoute=async(route_id)=>{
+  try {
+    const token=localStorage.getItem("admintoken")
+    if(!token){
+        return {message:"You must be an active admin"}
+    } 
+  const response = await fetch("http://localhost:5000/api/admin/delete/route", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json", 
+        'Authorization': `Bearer ${token.trim().replace(/^"|"$/g, "")}` },
+        body: JSON.stringify({route_id})
+      })
+  const data = await response.json().catch(() => ({})); 
+  if (!response.ok ) {
+    return { message: data.message || "Something went wrong" };
+  }
+  return {message:data.message}
+    } catch (err) {
+  return { message: "An error occurred. Please try again later." };
+}
+}
 export const ShowDashboard=async()=>{
   try {
     const token=localStorage.getItem("admintoken")

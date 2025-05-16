@@ -89,7 +89,7 @@ router.get("/show/airlines",CheckAdmin,(req,res)=>{
         if(result.length>0){
             return res.json(result)
         }
-        return res.json({message:"No users have signed up yet"})
+        return res.json({message:"No Airlines Partnered"})
     })
 })
 router.get("/show/bookings",CheckAdmin,(req,res)=>{
@@ -111,7 +111,7 @@ router.get("/show/bookings",CheckAdmin,(req,res)=>{
         if(result && result.length>0){
             return res.json(result)
         }else{
-          return res.json({message:"No users have signed up yet"})
+          return res.json({message:"No users have booked a flight yet"})
         }
     })
 })
@@ -140,7 +140,7 @@ router.get("/show/flights",CheckAdmin,(req,res)=>{
         if(result.length>0){
             return res.json(result)
         }
-        return res.json({message:"No users have signed up yet"})
+        return res.json({message:"No Flights created yet"})
     })
 })
 router.post("/add/flight", CheckAdmin, async (req, res) => {
@@ -177,7 +177,7 @@ router.post("/add/flight", CheckAdmin, async (req, res) => {
         if(result.length>0){
             return res.json(result)
         }
-        return res.json({message:"No users have signed up yet"})
+        return res.json({message:"No Flight Routes have been updated yet"})
     })
 })
 
@@ -244,7 +244,7 @@ router.post('/create/bookings', CheckAdmin, async (req, res) => {
   
       return res.json({ message: 'Booking cancelled successfully' });
     } catch (err) {
-      console.error('Error deleting booking:', err);
+      console.error('Error deleting :', err);
       return res.json({ message: 'Internal server error' });
     }
   });
@@ -264,7 +264,7 @@ router.post('/create/bookings', CheckAdmin, async (req, res) => {
           })
         return res.json({ message: 'Passenger Deleted successfully' });
       } catch (error) {
-        console.error('Error deleting booking:', error);
+        console.error('Error deleting :', error);
         return res.json({ message: 'Internal server error' });
       }
     });
@@ -283,7 +283,7 @@ router.post('/create/bookings', CheckAdmin, async (req, res) => {
               })
             return res.json({ message: 'Flight Deleted successfully' });
           } catch (error) {
-            console.error('Error deleting booking:', error);
+            console.error('Error deleting :', error);
             return res.json({ message: 'Internal server error' });
           }
         });
@@ -303,7 +303,7 @@ router.post('/create/bookings', CheckAdmin, async (req, res) => {
               })
             return res.json({ message: 'Airline Deleted successfully' });
           } catch (error) {
-            console.error('Error deleting booking:', error);
+            console.error('Error deleting :', error);
             return res.json({ message: 'Internal server error' });
           }
         });
@@ -320,10 +320,28 @@ router.post('/create/bookings', CheckAdmin, async (req, res) => {
                 });
                 
             }catch(err){
-                console.error('Error deleting booking:', err);
+                console.error('Error:', err);
                 return res.json({ message: 'Internal server error' });
             }
         }
     );
-    
+    router.delete("/delete/route",CheckAdmin,(req,res)=>{
+      try {
+        const { route_id } = req.body;
+        if (!route_id) {
+          return res.json({ error: 'Flight Route id is required' });
+        }
+          const sql = "DELETE FROM flight_schedules WHERE id=?"
+          user_tb.query(sql,[route_id],(error,result)=>{
+            if(error){
+                console.log(error)
+                return res.json({message:"Something Went Wrong Try Again Later"})
+            }
+          })
+        return res.json({ message: 'Flight Route Deleted successfully' });
+      } catch (error) {
+        console.error('Error deleting :', error);
+        return res.json({ message: 'Internal server error' });
+      }
+    });
 export default router;

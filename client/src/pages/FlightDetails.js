@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import { useApp } from '../context/parvaaz';
 import { calculateDuration, getCityFromIATA } from '../utils/aviationstack';
 import { MdFlightTakeoff,MdFlightLand } from "react-icons/md";
+import { toast } from 'react-toastify';
 
 function FlightDetails() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ function FlightDetails() {
   const handleContinue = () => {
     console.log(user)
     if(!user){
-      alert("You must be an active user first")
+      toast.warn("You must be an active user first")
       navigate("/login");
       return;
     }else{

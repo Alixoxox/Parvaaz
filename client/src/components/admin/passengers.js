@@ -1,30 +1,29 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { EnterPassenger, RemovePassenger, ShowUsers } from '../../utils/admin_stuff';
+import { toast } from 'react-toastify';
 const Passengers = () => {
     const [passengers, setPassengers] = useState([]);
     useEffect(()=>{
-        setTimeout(async()=>{
-            const data= await ShowUsers()   //display users
-            console.log(data)
-            setPassengers(data)
-        },20)
+      (async () => {
+        const data = await ShowUsers();
+        setPassengers(data);
+      })();
     },[])
-    const [error, setError] = useState('');
     
     const [newPassenger, setNewPassenger] = useState({ name: '', email: '', password: '', passport: '', nationality: '', dob:'', cnicNo:'' });
       const handleAddPassenger = async(e) => {
         e.preventDefault();
         if (newPassenger.name.trim()?.split(" ").length<2) {
-          setError('Full Name is required.');
+          toast.warn('Full Name is required.');
           return;
         }
         const[fname,lname]=newPassenger.name.trim()?.split(" ")
         await EnterPassenger(fname,lname,newPassenger.email,newPassenger.password,newPassenger.passport,newPassenger.nationality,newPassenger.dob,newPassenger.cnicNo)
-        const newId = passengers.length + 1;
-        setPassengers([...passengers, { id: newId, ...newPassenger }]);
+        toast.success("Passenger added successfully!")
+        const updatedList = await ShowUsers();
+        setPassengers(updatedList);
         setNewPassenger({ name: '', email: '', password: '', passport: '', nationality: '' });
-        setError('');
       };
     //   const handleUpdatePassenger = (id, updatedPassenger) => {
     //     setPassengers(passengers.map(p => (p.id === id ? { ...p, ...updatedPassenger } : p)));
@@ -33,16 +32,16 @@ const Passengers = () => {
       const handleDeletePassenger = async(id) => {
         const reply=await RemovePassenger(id)
         if(reply.message==='Passenger Deleted successfully'){
-            setPassengers(passengers.filter(p => p.id !== id));
+          toast.success(reply.message)
+          const data=await ShowUsers()
+          setPassengers(data);
         }else{
-            setError(reply.message)
+            toast.warn(reply.message)
         }
       };
     
   return (
     <div>
-        { error && <div className="bg-red-100 text-red-700 p-3 mb-4 rounded">{error}</div>}
-
                 <h2 className="text-3xl font-bold mb-6">Passengers</h2>
                 <form onSubmit={handleAddPassenger} className="mb-8 bg-white p-6 rounded-lg shadow-md">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -102,7 +101,7 @@ const Passengers = () => {
                   </tr>
                 </thead>
                     <tbody>
-                      {passengers.map(passenger => (
+                      {Array.isArray(passengers) && passengers.length>0 ?( passengers.map(passenger => (
                         <tr key={passenger.id} className="border-b ">
                           <td className="px-6 py-4">{passenger.id}</td>
                           <td className="px-6 py-4">{passenger.fname&&passenger.lname ?( passenger.fname+" "+passenger.lname):passenger.name}</td>
@@ -110,15 +109,6 @@ const Passengers = () => {
                           <td className="px-6 py-4">{passenger.passport_no|| passenger.passport}</td>
                           <td className="px-6 py-4">{passenger.nationality||"Null"}</td>
                           <td className="px-6 py-4">
-                            {/* <button
-                              onClick={() => {
-                                const updated = prompt('Enter new name:', passenger.name);
-                                if (updated) handleUpdatePassenger(passenger.id, { name: updated });
-                              }}
-                              className="text-blue-600 hover:underline mr-2"
-                            >
-                              Edit
-                            </button> */}
                             <button
                               onClick={() => handleDeletePassenger(passenger.id)}
                               className="text-red-600 hover:underline"
@@ -127,7 +117,11 @@ const Passengers = () => {
                             </button>
                           </td>
                         </tr>
-                      ))}
+                      ))):(
+                        <tr>
+                        <td colSpan="8" className="px-6 py-4 text-center">No Passengers found</td>
+                      </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>

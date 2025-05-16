@@ -7,6 +7,7 @@ import { useApp } from '../context/parvaaz';
 import { createUser } from '../utils/sendData';
 import { loginUser } from '../utils/getData';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const LoginSignup = () => {
   const navigate=useNavigate()
@@ -28,21 +29,23 @@ const LoginSignup = () => {
     e.preventDefault();
     if (isSignup) {
       if (name.trim().split(" ").length < 2) {
-        alert("Please enter your full name (first and last).");
+        toast.warn("Please enter your full name (first and last).");
         return;
       }
       const userDetails = await createUser(name, dob, nationality, passportNo, passportScan, email,password ,IdScan,cnic);
-      if (userDetails.message) {
-        alert(userDetails.message);
+      if (userDetails.message==="An error occurred") {
+        toast.warn(userDetails.message);
       } else {
+        toast.success(userDetails.message)
         setUser(userDetails);
         navigate(-1)
       }
     }else{
       const { user, message } = await loginUser(email, password);
       if (message) {
-        alert(message);
+        toast.info(message);
       } else {
+        toast.success("Logged in successfully!!")
         setUser(user);
         navigate(-1);
       }
@@ -55,6 +58,7 @@ const LoginSignup = () => {
       console.log('Logged in as:', user.displayName);
       // You can send this user info to your MySQL backend here if needed
     } catch (error) {
+      toast.warn("We havent Implemented Google Login yet!")
       console.error('Google login failed', error);
     }
   };

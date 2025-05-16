@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createFlight, RemoveFlight, ShowFlights } from '../../utils/admin_stuff.js';
+import { toast } from 'react-toastify';
 
 const Flights = () => {
 
@@ -22,22 +23,24 @@ const Flights = () => {
     e.preventDefault();
     setTimeout(async()=>{
       const create=await createFlight( newFlight.flight_code,newFlight.total_seats,newFlight.airline_code);
-      alert(create?.message)
+      if(create.message==="Airline Not Present please Create an Airline First"||create.message==="An error occurred. Please try again later."){
+        toast.error(create.message)
+      }else{
+        toast.success(create?.message)
+      }
+      const newEntry = await ShowFlights()
+      setFlights(newEntry);
     },20)
-    const newEntry = {
-      id: flights.length + 1,
-      ...newFlight,
-      total_seats: parseInt(newFlight.total_seats) || 200
-    };
-    setFlights([...flights, newEntry]);
     setNewFlight({ airline_code: '', flight_code: '', total_seats: '' });
   };
  const handleDeleteFlight=async(id)=>{
   const reply=await RemoveFlight(id);
   if(reply.message==='Flight Deleted successfully'){
-    setFlights(flights.filter(a => a.id !== id))
+    toast.warn(reply.message)
+    const data=await ShowFlights()
+    setFlights(data)
   }else{
-    alert(reply.message)
+    toast.warn(reply.message)
   }
    }
      return (
@@ -84,7 +87,7 @@ const Flights = () => {
           </tr>
         </thead>
         <tbody>
-          {flights.length>0 && flights.map((flight) => (
+          {Array.isArray(flights) && flights.length>0 ?(flights.map((flight) => (
             <tr key={flight.id} className="border-b">
               <td className="px-4 py-2">{flight.id}</td>
               <td className="px-4 py-2">{flight.airline_code}</td>
@@ -99,7 +102,9 @@ const Flights = () => {
                 </button>
               </td>
             </tr>
-          ))}
+          ))):( <tr>
+            <td colSpan="8" className="px-6 py-4 text-center">No Flights found</td>
+          </tr>)}
         </tbody>
       </table>
     </div>

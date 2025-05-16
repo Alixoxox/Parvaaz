@@ -11,6 +11,7 @@ import Passengers from "../components/admin/passengers";
 import Booking from "../components/admin/booking";
 import { FaBars, FaTimes } from "react-icons/fa"; // Add this at the top
 import Dashboard from "../components/admin/dashboard";
+import { toast } from "react-toastify";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -78,7 +79,6 @@ const AdminDashboard = () => {
     section: "",
     content: "",
   });
-  const [error, setError] = useState("");
   const { setAdmin } = useApp();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -87,6 +87,7 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("admintoken");
+    toast.success("Successfully Logged Out")
     setAdmin({ username: "", password: "" });
     navigate("/", { replace: true });
   };
@@ -95,7 +96,7 @@ const AdminDashboard = () => {
   const handleAddInquiry = (e) => {
     e.preventDefault();
     if (!newInquiry.name || !newInquiry.email) {
-      setError("Name and email are required.");
+      toast.warn("Name and email are required.");
       return;
     }
     const newId = inquiries.length + 201;
@@ -107,7 +108,7 @@ const AdminDashboard = () => {
       date: "",
       status: "Open",
     });
-    setError("");
+    toast.success("Successful Added An Inquiry")
   };
 
   const handleUpdateInquiry = (id, updatedInquiry) => {
@@ -123,7 +124,7 @@ const AdminDashboard = () => {
   const handleUpdateContent = (e) => {
     e.preventDefault();
     if (!newContent.page || !newContent.section) {
-      setError("Page and section are required.");
+      toast.warn("Page and section are required.");
       return;
     }
     const existing = content.find(
@@ -140,7 +141,7 @@ const AdminDashboard = () => {
       setContent([...content, { id: newId, ...newContent }]);
     }
     setNewContent({ page: "", section: "", content: "" });
-    setError("");
+    toast.success("Successfully Added!");
   };
 
 
@@ -219,11 +220,7 @@ const AdminDashboard = () => {
 </nav>
             {/* Main Content */}
         <div className="flex-1 max-w-7xl mx-auto p-8">
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-              {error}
-            </div>
-          )}
+        
 
           {activeTab === "dashboard" && (
             <Dashboard />

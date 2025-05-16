@@ -20,7 +20,6 @@ const limiter = RateLimit({
     }
   });
   
-app.use(limiter);
 app.use(express.json());
 app.use(cors()) // used to by pass cors Limitation by browser
 app.use('/api/users',userRouter);
