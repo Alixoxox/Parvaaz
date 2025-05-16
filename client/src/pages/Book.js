@@ -6,8 +6,9 @@ import Footer from '../components/Footer';
 import cityCodes from '../utils/iata.json'
 import { toast } from 'react-toastify';
 function Book() {
-  // Use context for global state management
-  const {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
+    const {
     tripType, setTripType, fromCity, setFromCity, toCity, setToCity,departDate, setDepartDate, returnDate, setReturnDate, passengers, setPassengers, cabinClass, setCabinClass } = useApp();
 
   // Local state for UI management

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 function TravelServices() {
   const navigate=useNavigate()
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   return (
     <div className="min-h-screen bg-gray-50 pt-0 flex flex-col">
       <Navbar />

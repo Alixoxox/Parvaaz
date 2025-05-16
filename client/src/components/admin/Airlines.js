@@ -17,6 +17,7 @@ const Airlines = () => {
       setAirlines(data);
     };
     fetchData();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []); 
 
 const handleAddAirline = async (e) => {

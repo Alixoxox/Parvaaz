@@ -36,7 +36,8 @@ const [totalbooked,setTotalBooked]=useState(0)
         setTotalBooked(data.totalBooked[0]?.booked)
     };
     
-    setTimeout(fetchData, 20);  // Use setTimeout to simulate delay if needed
+    setTimeout(fetchData, 20); 
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const bookingTrendsData = {

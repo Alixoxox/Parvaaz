@@ -6,11 +6,11 @@ const Flights = () => {
 
   const [flights, setFlights] = useState([]);
   useEffect(()=>{
-
     setTimeout(async()=>{
       const fdata=await ShowFlights()
       setFlights(fdata);
     },20)
+    window.scrollTo({ top: 0, behavior: "smooth" });
   },[])
 
   const [newFlight, setNewFlight] = useState({

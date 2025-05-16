@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 function CabinFeatures() {
   const navigate=useNavigate()
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />

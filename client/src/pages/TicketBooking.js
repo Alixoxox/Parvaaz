@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 function TicketBooking() {
   const location = useLocation();
   const navigate = useNavigate();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   const {
     user,
     selectedFlight,  //contains incoming/arrival for roundtrip and departure for oneway

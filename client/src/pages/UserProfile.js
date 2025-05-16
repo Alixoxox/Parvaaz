@@ -62,7 +62,7 @@ function UserProfile() {
         setIdCardPreviewImage(user.cnicImg);
       }
       fetchHistory()
-           
+       window.scrollTo({ top: 0, behavior: "smooth" });(0,0)    
     }
     setLoading(false);
   }, [user]);
