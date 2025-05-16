@@ -99,7 +99,7 @@ function Navbar() {
         if (item.keywords.some(keyword => query.includes(keyword.toLowerCase()))) {
           matchedRoute = item.route;
         if (matchedRoute === '/admin-dashboard') {
-          const adminToken = localStorage.getItem('adminToken');
+          const adminToken = localStorage.getItem('admintoken');
           if (!adminToken) {
             navigate('/admin-login');
             setSearchQuery('');
@@ -107,7 +107,7 @@ function Navbar() {
             return;
           }
         } else if (matchedRoute === '/user-profile') {
-          const userToken = localStorage.getItem('authToken');
+          const userToken = localStorage.getItem('authtoken');
           if (!userToken) {
             navigate('/login');
             setSearchQuery('');
