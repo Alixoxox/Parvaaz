@@ -11,7 +11,7 @@ import RateLimit from 'express-rate-limit';
 const app=express()
 
 const limiter = RateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
+    windowMs: 10 * 60 * 1000, // 15 minutes
     max: 100, // limit each IP to 100 requests per windowMs
     handler: function (req, res) {
       res.status(429).json({
@@ -20,6 +20,7 @@ const limiter = RateLimit({
     }
   });
   
+app.use(limiter)
 app.use(express.json());
 app.use(cors()) // used to by pass cors Limitation by browser
 app.use('/api/users',userRouter);
