@@ -1,5 +1,4 @@
 import { Router } from "express";
-import flights_tb from "../models/flights_db.js";
 import { queryAsync } from "../models/booking.js";
 const router = Router();
 
