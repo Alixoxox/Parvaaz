@@ -37,6 +37,15 @@ function Book() {
       setShowToDropdown(value.length > 0 && filtered.length > 0);
     }
   };
+  const handleCitySelect = (field, city) => {
+    if (field === 'from') {
+      setFromCity(city);
+      setShowFromDropdown(false);
+    } else {
+      setToCity(city);
+      setShowToDropdown(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,12 +60,6 @@ function Book() {
         toast.warn('Please select valid cities from the list.');
         return;
       }
-     //} else if (tripType === 'multicity') {
-    //   const validCities = Object.keys(cityCodes).map(city => city.toLowerCase());
-    //   if (!validCities.includes(fromCity.toLowerCase()) || !validCities.includes(toCity.toLowerCase())) {
-    //     alert('Please select valid cities from the list.');
-    //     return;
-    //   }
     }
     navigate('/flights');
   };
@@ -91,12 +94,6 @@ function Book() {
             >
               Round Trip
             </button>
-            {/* <button
-              className={`tab ${tripType === 'multicity' ? 'tab-active' : ''} px-4 py-2 text-sm font-medium text-gray-700`}
-              onClick={() => setTripType('multicity')}
-            >
-              Multi-City
-            </button> */}
           </div>
 
           <form onSubmit={handleSubmit}>
