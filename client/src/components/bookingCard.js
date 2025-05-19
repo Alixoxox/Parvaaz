@@ -1,5 +1,9 @@
-// components/BookingCard.jsx
+import { useNavigate } from "react-router-dom";
 const BookingCard = ({ booking }) => {
+  const navigate=useNavigate()
+    const ticketInfo = () => {
+      navigate(`/ticket/${booking.booking_id}`, { state: booking });
+    };
     return (
         <tr className="hover:bg-gray-50">
         <td className="px-6 py-4 font-medium">PV{booking.booking_id}</td>
@@ -11,7 +15,7 @@ const BookingCard = ({ booking }) => {
         <td className="px-6 py-4">
           <span
             className={`px-3 py-1 rounded-full text-xs ${
-              booking.status === "Confirmed"
+              booking.status === "completed"
                 ? "bg-green-100 text-green-600"
                 : booking.status === "Upcoming"
                 ? "bg-blue-100 text-blue-600"
@@ -24,7 +28,7 @@ const BookingCard = ({ booking }) => {
         <td className="px-6 py-4 font-medium">${booking.cabin_class_cost}</td>
         <td className="px-6 py-4">
           {/* add further details or a plain ticket or smthng */}
-          <button className="text-blue-600 hover:text-blue-800 font-medium">
+          <button className="text-blue-600 hover:text-blue-800 font-medium" onClick={ticketInfo}>
             View Details
           </button>
         </td>

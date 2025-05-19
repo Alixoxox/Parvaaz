@@ -188,7 +188,8 @@ router.get("/show/all", authenicator, (req, res) => {
     fs.flight_date,
     fs.departure_time,
     fs.arrival_time,
-   
+    b.cabin_class,
+   CONCAT(u.fname, ' ', u.lname) AS user_name,
     f.flight_code,
     a.airline_code,
     a.country AS airline_country,
@@ -209,6 +210,8 @@ JOIN
     airlines a ON f.airline_id = a.id
 JOIN 
     bookings b ON fs.id = b.flight_schedule
+JOIN
+    users u ON b.user_id = u.id
 WHERE 
     b.user_id = ? 
 ORDER BY 

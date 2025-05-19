@@ -30,6 +30,7 @@ import { useApp } from './context/parvaaz';
 import { updateData } from './utils/getData';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ViewTicket from './pages/viewTicket';
 function App() {
   // const [user] = useAuthState(auth);
   const {user,setUser}=useApp()
@@ -57,6 +58,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginSignup />} />
         <Route path="/book" element={<Book />} />
+        <Route path="/ticket/:id" element={<ViewTicket />} />
         <Route path="/where-we-fly" element={<WhereWeFly />} />
         <Route path="/help" element={<Help />} />
         <Route path="/admin-login" element={<AdminLogin />} />
