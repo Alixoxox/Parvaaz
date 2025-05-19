@@ -206,9 +206,9 @@ const LoginSignup = () => {
             className="mt-6 w-full flex items-center justify-center bg-white border border-gray-300 rounded-full px-4 py-3 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
           >
             <img 
-              src="/google-icon.png" 
+              src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" 
               alt="Google" 
-              className="w-5 h-5 mr-3" 
+              className="w-8 h-8 mr-3" 
             />
             Continue with Google
           </button>

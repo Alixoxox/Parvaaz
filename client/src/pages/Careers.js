@@ -29,7 +29,7 @@ function Careers() {
       {/* Hero Section - Prominent background, touches Navbar, no text shadow */}
       <div
         className="relative h-[600px] w-full bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/careers-hero.jpg')" }}
+        style={{ backgroundImage: "url(https://images.pexels.com/photos/3760069/pexels-photo-3760069.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)" }}
       >
         <div className="overlay"></div>
         <div className="absolute inset-0 flex items-center justify-center">

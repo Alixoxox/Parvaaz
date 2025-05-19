@@ -12,7 +12,7 @@ function Transportation() {
       {/* Hero Section */}
       <div 
         className="hero"
-        style={{ backgroundImage: "url('/images/transportation-hero.jpg')" }}
+        style={{ backgroundImage: "url(https://images.pexels.com/photos/30782653/pexels-photo-30782653/free-photo-of-airport-tarmac-with-passenger-bus-and-airplanes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)" }}
         data-hero="true"
       >
         <div className="overlay"></div>

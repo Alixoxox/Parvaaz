@@ -31,7 +31,7 @@ function Pricing() {
       {/* Hero Section */}
       <div 
         className="hero"
-        style={{ backgroundImage: "url('/images/pricing-hero.jpg')" }}
+        style={{ backgroundImage: "url(https://images.pexels.com/photos/6693665/pexels-photo-6693665.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)" }}
         data-hero="true"
       >
         <div className="overlay"></div>

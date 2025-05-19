@@ -35,7 +35,7 @@ function Journey() {
       {/* Hero Section */}
       <div 
         className="hero"
-        style={{ backgroundImage: "url('/images/journey-hero.jpg')" }}
+        style={{ backgroundImage: "url(https://images.pexels.com/photos/3082851/pexels-photo-3082851.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)" }}
         data-hero="true"
       >
         <div className="overlay"></div>

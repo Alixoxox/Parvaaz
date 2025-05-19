@@ -30,7 +30,7 @@ function People() {
       {/* Hero Section */}
       <div 
         className="hero"
-        style={{ backgroundImage: "url('/images/people-hero.jpg')" }}
+        style={{ backgroundImage: "url(https://images.pexels.com/photos/7109063/pexels-photo-7109063.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)" }}
         data-hero="true"
       >
         <div className="overlay"></div>

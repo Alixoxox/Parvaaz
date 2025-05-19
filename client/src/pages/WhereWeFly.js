@@ -117,7 +117,7 @@ function WhereWeFly() {
       {/* Hero Banner - Prominent background, touches Navbar, visible text */}
       <div 
         className="relative h-[600px] w-full bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/world-map.jpg')" }}
+        style={{ backgroundImage: "url(https://getsynccom.wpenginepowered.com/wp-content/uploads/2022/11/NetApp-1620-776-e1672271508219-1536x767.jpeg)" }}
       >
         <div className="overlay"></div>
         <div className="absolute inset-0 flex items-center justify-center">

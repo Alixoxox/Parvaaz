@@ -31,7 +31,7 @@ function KnowHowToTravel() {
       {/* Hero Section */}
       <div 
         className="hero"
-        style={{ backgroundImage: "url('/images/know-how-to-travel-hero.jpg')" }}
+        style={{ backgroundImage: "url('https://images.pexels.com/photos/5778524/pexels-photo-5778524.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')" }}
         data-hero="true"
       >
         <div className="overlay"></div>

@@ -12,7 +12,7 @@ function TravelServices() {
       {/* Hero Section */}
       <div 
         className="hero"
-        style={{ backgroundImage: "url('/images/travel-services-hero.jpg')" }}
+        style={{ backgroundImage: "url(https://images.pexels.com/photos/3647693/pexels-photo-3647693.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)" }}
         data-hero="true"
       >
         <div className="overlay"></div>

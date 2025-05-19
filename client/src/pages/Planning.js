@@ -13,7 +13,7 @@ function Planning() {
       {/* Hero Banner */}
       <div 
         className="relative h-[600px] w-full bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/planning-hero.jpg')" }}
+        style={{ backgroundImage: "url(https://images.pexels.com/photos/8828583/pexels-photo-8828583.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)" }}
       >
         <div className="overlay"></div>
         <div className="absolute inset-0 flex items-center justify-center">

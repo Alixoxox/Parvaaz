@@ -50,7 +50,7 @@ function Partners() {
       {/* Hero Section - Prominent background, touches Navbar, no text shadow */}
       <div
         className="relative h-[600px] w-full bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/partners-hero.jpg')" }}
+        style={{ backgroundImage: "url(https://images.pexels.com/photos/2026324/pexels-photo-2026324.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)" }}
       >
         <div className="overlay"></div>
         <div className="absolute inset-0 flex items-center justify-center">

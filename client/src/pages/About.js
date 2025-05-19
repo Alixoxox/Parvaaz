@@ -27,7 +27,7 @@ function About() {
       {/* Hero Section - Prominent background, touches Navbar, visible text */}
       <div
         className="relative h-[600px] w-full bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/about-hero.jpg')" }}
+        style={{ backgroundImage: "url(https://images.pexels.com/photos/45230/aircraft-double-decker-airport-army-aviation-space-45230.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)" }}
       >
         <div className="overlay"></div>
         <div className="absolute inset-0 flex items-center justify-center">
