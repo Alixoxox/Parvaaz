@@ -90,11 +90,11 @@ function Home() {
           <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">Popular Destinations</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {['Dubai', 'New York', 'London'].map((city, index) => (
+            {['Dubai', 'New-York', 'London'].map((city, index) => (
               <div key={index} className="relative rounded-lg overflow-hidden h-80 shadow-lg group">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105 cursor-pointer"
-                  style={{ backgroundImage: `url('/images/destination-${index + 1}.jpg')` }}
+                  style={{ backgroundImage: `url('/images/destination-${city}.jpg')` }}
                   onClick={() => navigateToCountry(city)}
                 ></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent"></div>
