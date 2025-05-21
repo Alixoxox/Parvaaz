@@ -7,6 +7,7 @@ import airlinesRouter from './routes/airlines_R.js'
 import adminRoute from './routes/admin_R.js'
 import bookingRoute from "./routes/bookings.js"
 import baggage_Router from './routes/baggae_R.js'
+import inquiries_R from './routes/inq_R.js'
 import RateLimit from 'express-rate-limit';
 const app=express()
 
@@ -29,7 +30,7 @@ app.use('/api/data/airlines',airlinesRouter);
 app.use("/api/admin",adminRoute)
 app.use('/api/users/booking',bookingRoute)
 app.use('/api/data/baggage', baggage_Router)
-
+app.use("/api/inquiries", inquiries_R)
 app.listen(PORT,()=>{
     console.log("Server running in Port : ",PORT);
 })

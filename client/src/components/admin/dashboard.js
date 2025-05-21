@@ -26,14 +26,17 @@ const Dashboard = () => {
   const [passengers, setPassengers] = useState([]);
   const [bookings, setBookings] = useState([]);
 const [totalbooked,setTotalBooked]=useState(0)
+const [openInquiries, setOpenInquiries] = useState(0);
+
   // Fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
       const data = await ShowDashboard();
-      console.log(data); // Check the structure of the data
+      setOpenInquiries(data.no_inquiries[0].totalInq || 0)
       setPassengers(new Array(data.passengerCount).fill({})); // Or just use the count if you don't need passenger details
       setBookings(data.bookings);
-        setTotalBooked(data.totalBooked[0]?.booked)
+      setTotalBooked(data.totalBooked[0]?.booked)
+   
     };
     
     setTimeout(fetchData, 20); 
@@ -115,18 +118,12 @@ const originData = {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-lg font-semibold text-gray-600">Today's Departures</h3>
           <p className="text-3xl font-bold mt-2">
-          {
-              bookings.filter(
-                (b) =>
-                  new Date(b.flight_date).toDateString() ===
-                  new Date().toDateString()
-              ).length
-            }
+          {bookings.filter((b) => new Date(b.flight_date).toDateString() ===  new Date().toDateString()).length}
           </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-lg font-semibold text-gray-600">Open Inquiries</h3>
-          <p className="text-3xl font-bold mt-2">{1}</p> {/* Update with actual inquiries count if available */}
+          <p className="text-3xl font-bold mt-2">{openInquiries}</p> {/* Update with actual inquiries count if available */}
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -143,7 +140,7 @@ const originData = {
           </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold mb-4">Flight Origins</h3>
+            <h3 className="text-lg font-semibold mb-4">Popular Flight Origins</h3>
             <div style={{ height: "300px" }}>
               <Pie data={originData} options={{ responsive: true, maintainAspectRatio: false }} />
             </div>

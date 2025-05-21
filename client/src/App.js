@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { auth } from './firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import Home from './pages/Home';
 import LoginSignup from './pages/LoginSignup';
 import Book from './pages/Book';
@@ -32,7 +30,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ViewTicket from './pages/viewTicket';
 function App() {
-  // const [user] = useAuthState(auth);
   const {user,setUser}=useApp()
    useEffect(() => {
      const fetchuserdata = async () => {

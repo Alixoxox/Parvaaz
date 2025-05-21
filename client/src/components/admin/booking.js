@@ -163,7 +163,7 @@ const Booking = () => {
                 <th className="px-6 py-3 text-left text-gray-700 font-medium">Seat No</th>
                 <th className="px-6 py-3 text-left text-gray-700 font-medium">Date</th>
                 <th className="px-6 py-3 text-left text-gray-700 font-medium">Cabin Class</th>
-                <th className="px-6 py-3 text-left text-gray-700 font-medium">Actions</th>
+                <th className="px-6 py-3 text-left text-gray-700 font-medium">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -180,13 +180,18 @@ const Booking = () => {
                         ? booking.flight_date.slice(0, 10) 
                         : 'N/A'}
                     </td>
-                    <td className="px-6 py-4">{booking.cabin_class}</td>
+                    <td className="px-6 py-4 capitalize">{booking.cabin_class}</td>
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleDeleteBooking(booking.id)}
                         className="text-red-600 hover:underline"
                       >
-                        Delete
+                         <img
+                    src={process.env.PUBLIC_URL + '/images/trash-bin.png'}
+                    alt="Delete"
+                    width={24}
+                    height={24}
+                  />
                       </button>
                     </td>
                   </tr>

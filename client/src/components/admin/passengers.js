@@ -97,23 +97,28 @@ const Passengers = () => {
                     <th className="px-6 py-3 text-gray-700 font-medium">Email</th>
                     <th className="px-6 py-3 text-gray-700 font-medium">Passport</th>
                     <th className="px-6 py-3 text-gray-700 font-medium">Nationality</th>
-                    <th className="px-6 py-3 text-gray-700 font-medium">Actions</th>
+                    <th className="px-6 py-3 text-gray-700 font-medium">Action</th>
                   </tr>
                 </thead>
                     <tbody>
                       {Array.isArray(passengers) && passengers.length>0 ?( passengers.map(passenger => (
                         <tr key={passenger.id} className="border-b ">
                           <td className="px-6 py-4">{passenger.id}</td>
-                          <td className="px-6 py-4">{passenger.fname&&passenger.lname ?( passenger.fname+" "+passenger.lname):passenger.name}</td>
+                          <td className="px-6 py-4 capitalize">{passenger.fname&&passenger.lname ?( passenger.fname+" "+passenger.lname):passenger.name}</td>
                           <td className="px-6 py-4">{passenger.email}</td>
                           <td className="px-6 py-4">{passenger.passport_no|| passenger.passport}</td>
-                          <td className="px-6 py-4">{passenger.nationality||"Null"}</td>
+                          <td className="px-6 py-4 capitalize">{passenger.nationality||"Null"}</td>
                           <td className="px-6 py-4">
                             <button
                               onClick={() => handleDeletePassenger(passenger.id)}
-                              className="text-red-600 hover:underline"
+                              className="text-red-600 hover:underline "
                             >
-                              Delete
+                              <img
+                                src={process.env.PUBLIC_URL + '/images/trash-bin.png'}
+                                alt="Delete"
+                                width={24}
+                                height={24}
+                              />
                             </button>
                           </td>
                         </tr>

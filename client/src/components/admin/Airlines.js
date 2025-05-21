@@ -98,7 +98,7 @@ const handleDeleteAirline = async (id) => {
             <th className="px-4 py-2">Country</th>
             <th className="px-4 py-2">Contact</th>
             <th className="px-4 py-2">Info</th>
-            <th className="px-4 py-2">Actions</th>
+            <th className="px-4 py-2">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -114,7 +114,12 @@ const handleDeleteAirline = async (id) => {
                   onClick={() => handleDeleteAirline(airline.id)}
                   className="text-red-600 hover:underline"
                 >
-                  Delete
+                  <img
+                    src={process.env.PUBLIC_URL + '/images/trash-bin.png'}
+                    alt="Delete"
+                    width={24}
+                    height={24}
+                  />
                 </button>
               </td>
               

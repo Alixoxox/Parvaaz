@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { sendInquiry } from '../utils/contact';
+import { useApp } from '../context/parvaaz';
+import { toast } from 'react-toastify';
 const Help = () => {
+  const {user}=useApp()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,10 +24,15 @@ const Help = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    // Here you would typically send this data to your backend
+    const msg=await sendInquiry(formData.name, formData.email, formData.subject, formData.message,user?.id);
+    if(msg.message==='Thanks for contacting us! Our support team has received your message and will be in touch soon.'){
+      toast.success(msg.message)
+    }else{
+      toast.error(msg.message)
+    }
     setSubmitted(true);
     
     // Reset form after submission
@@ -148,8 +157,7 @@ const Help = () => {
             
             <button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 rounded-full font-medium hover:opacity-90 transition-opacity"
-            >
+              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 rounded-full font-medium hover:opacity-90 transition-opacity">
               Submit Inquiry
             </button>
           </form>

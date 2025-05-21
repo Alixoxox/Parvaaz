@@ -83,7 +83,7 @@ const Flights = () => {
             <th className="px-4 py-2">Airline Code</th>
             <th className="px-4 py-2">Flight Code</th>
             <th className="px-4 py-2">Total Seats</th>
-            <th className="px-4 py-2">Actions</th>
+            <th className="px-4 py-2">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -98,7 +98,12 @@ const Flights = () => {
                   onClick={() => handleDeleteFlight(flight.id)}
                   className="text-red-600 hover:underline"
                 >
-                  Delete
+                   <img
+                    src={process.env.PUBLIC_URL + '/images/trash-bin.png'}
+                    alt="Delete"
+                    width={24}
+                    height={24}
+                  />
                 </button>
               </td>
             </tr>

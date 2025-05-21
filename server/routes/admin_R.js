@@ -313,10 +313,11 @@ router.post('/create/bookings', CheckAdmin, async (req, res) => {
                 const passengerCountQuery = await queryAsync('SELECT COUNT(*) as total FROM users');
                 const bookingsQuery = await queryAsync('SELECT origin,destination,flight_date FROM flight_schedules');
                 const totalBooked =await queryAsync("SELECT COUNT(*) as booked FROM bookings")
+                const no_inquiries = await queryAsync("SELECT COUNT(*) as totalInq FROM inquiries WHERE status = 'Open' ")
                 res.json({
                     passengerCount: passengerCountQuery[0].total,
                     bookings: bookingsQuery,
-                    totalBooked
+                    totalBooked,no_inquiries
                 });
                 
             }catch(err){

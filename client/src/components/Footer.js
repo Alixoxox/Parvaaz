@@ -1,18 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { auth } from '../firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-
+import { useApp } from '../context/parvaaz';
 function Footer() {
-  const [ setUser,admin] = useState(null);
-
-  // // Check auth state to determine if user is an admin
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-  //     setUser(currentUser);
-  //   });
-  //   return () => unsubscribe();
-  // }, []);
+  const { admin}=useApp()
 
   const isAdmin = admin && admin.username === 'admin';
 

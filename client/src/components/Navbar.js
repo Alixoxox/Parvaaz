@@ -1,7 +1,5 @@
 import React, { useState,useEffect } from 'react';
 import { Link, useLocation,useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { useApp } from '../context/parvaaz';
 import { toast } from 'react-toastify';
 // Reusable NavLink component

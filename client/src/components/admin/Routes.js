@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
 import "flatpickr/dist/themes/material_blue.css";
-import { createFlightRoute,  ShowFlights, ShowRoutes } from "../../utils/admin_stuff.js";
+import { createFlightRoute,  RemoveRoute,  ShowFlights, ShowRoutes } from "../../utils/admin_stuff.js";
 import { toast } from "react-toastify";
 const Routes = () => {
   const [flights, setFlights] = useState([]);
@@ -64,7 +64,7 @@ const Routes = () => {
   const handleDeleteFlight = async(id) => {
     try{
       await RemoveRoute(id)
-      const data=await ShowFlights()
+      const data=await ShowRoutes()
       setFlights(data);
       toast.info("Successfully Deleted Flight")
     }catch(err){
@@ -73,7 +73,7 @@ const Routes = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="py-2">
       <h2 className="text-3xl font-bold mb-6">Flight Routes</h2>
     
       <form
@@ -263,8 +263,8 @@ const Routes = () => {
       </form>
 
       <div className="bg-white rounded-lg shadow-md overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-100">
+        <table className="min-w-[1200px] w-full table-fixed text-sm ">
+          <thead className="bg-gray-100 ">
             <tr>
               <th className="px-3 py-3 ">ID</th>
               <th className="px-3 py-3 ">Flight No.</th>
@@ -282,7 +282,7 @@ const Routes = () => {
               <th className="px-3 py-3 ">Pre-Eco Seats</th>
               <th className="px-3 py-3 ">Business Seats</th>
               <th className="px-3 py-3 ">First Seats</th>
-              <th className="px-3 py-3 ">Actions</th>
+              <th className="px-3 py-3 ">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -292,9 +292,9 @@ const Routes = () => {
                 <td className="px-3 py-4">{f.flightNumber}</td>
                 <td className="px-3 py-4">{f.origin}</td>
                 <td className="px-3 py-4">{f.destination}</td>
-                <td className="px-3 py-4">{f.flight_date.slice(0,10)}</td>
-                <td className="px-3 py-4">{f.departure_time}</td>
-                <td className="px-3 py-4">{f.arrival_time}</td>
+                <td className="px-3 py-4">{f.flight_date?.slice(0,10)||""}</td>
+                <td className="px-3 py-4">{f.departure_time?.slice(0,5)||""}</td>
+                <td className="px-3 py-4">{f.arrival_time?.slice(0,5)||""}</td>
                 <td className="px-3 py-4">{f.stops}</td>
                 <td className="px-3 py-4">${f.cost_eco}</td>
                 <td className="px-3 py-4">${f.cost_pre_eco}</td>
@@ -309,7 +309,12 @@ const Routes = () => {
                     onClick={() => handleDeleteFlight(f.id)}
                     className="text-red-600 hover:underline"
                   >
-                    Delete
+                  <img
+                    src={process.env.PUBLIC_URL + '/images/trash-bin.png'}
+                    alt="Delete"
+                    width={24}
+                    height={24}
+                  />
                   </button>
                 </td>
               </tr>

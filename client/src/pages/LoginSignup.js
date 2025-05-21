@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '../firebase';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useApp } from '../context/parvaaz';
@@ -23,7 +21,6 @@ const LoginSignup = () => {
   const [dob,setDob]=useState("");
   const [nationality,setnationality]=useState("")
   
-  const provider = new GoogleAuthProvider();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   const handleSubmit = async (e) => {
@@ -50,17 +47,6 @@ const LoginSignup = () => {
         setUser(user);
         navigate(-1);
       }
-    }
-  };
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log('Logged in as:', user.displayName);
-      // You can send this user info to your MySQL backend here if needed
-    } catch (error) {
-      toast.warn("We havent Implemented Google Login yet!")
-      console.error('Google login failed', error);
     }
   };
 
@@ -195,29 +181,11 @@ const LoginSignup = () => {
             </button>
           </form>
           
-          <div className="mt-6 flex items-center justify-center">
-            <span className="block w-full h-px bg-gray-300"></span>
-            <span className="px-4 text-gray-500 bg-white">OR</span>
-            <span className="block w-full h-px bg-gray-300"></span>
-          </div>
-          
-          <button
-            onClick={handleGoogleLogin}
-            className="mt-6 w-full flex items-center justify-center bg-white border border-gray-300 rounded-full px-4 py-3 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
-          >
-            <img 
-              src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" 
-              alt="Google" 
-              className="w-8 h-8 mr-3" 
-            />
-            Continue with Google
-          </button>
-          
           <div className="mt-8 text-center">
             <button 
               onClick={() => setIsSignup(!isSignup)} 
               className="text-blue-600 hover:text-blue-800 font-medium"
-            >
+            >  {window.scrollTo({ top: 0, behavior: "smooth" }) }
               {isSignup ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
             </button>
           </div>
