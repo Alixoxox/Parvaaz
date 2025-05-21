@@ -115,7 +115,7 @@ useEffect(()=>{
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 mt-8">
+      <div className="max-w-4xl mx-auto px-4 mt-8 mb-5">
         {isBooked ? (
           <div className="bg-white p-8 rounded-lg shadow-md mb-20 mt-20">
             <div className="text-center mb-8">
@@ -217,7 +217,6 @@ useEffect(()=>{
                 View E-Ticket
               </button>
             </div>
-            <Footer />
           </div>
         ) : (
           <>
@@ -546,10 +545,10 @@ useEffect(()=>{
                 </div>
               </div>
             </div>
-            <Footer />
           </>
         )}
       </div>
+        <Footer />
     </div>
   );
 }
