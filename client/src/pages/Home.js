@@ -2,15 +2,28 @@ import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
+import { useApp } from '../context/parvaaz';
 function Home() {
   const navigate=useNavigate()
+  const {setToCity}=useApp()
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
-  const navigateToBook = () => {
-    navigate('/book') ;
-  };
-
-  // Function to redirect to countries' official websites
+  
+  const navigateToBook = (cityOrEvent) => {
+      let city = cityOrEvent;
+      if (cityOrEvent && cityOrEvent.nativeEvent) {
+        city = null; // No city passed
+      }
+      if (city) {
+        let cityloc = city;
+        console.log("city", city, cityloc);
+        if (city === "New-York") {
+          cityloc = city.replace("-", " ");
+        }
+        setToCity(cityloc);
+      }
+      navigate("/book");
+    }; 
   const navigateToCountry = (country) => {
     const countryWebsites = {
       'Dubai': 'https://www.visitdubai.com/',
@@ -24,7 +37,6 @@ function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
       {/* Hero Section - Full-screen, touches Navbar, with visible text */}
       <div 
         className="relative h-screen bg-cover bg-center"
@@ -36,7 +48,7 @@ function Home() {
             <h1 className="text-4xl md:text-5xl font-bold hero-text">Welcome to Parvaaz</h1>
             <p className="text-lg md:text-xl mt-4 mb-8 hero-text">Explore the world with comfort and ease</p>
             <button 
-              onClick={navigateToBook}
+              onClick={()=>navigateToBook()}
               className="bg-red-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-black transition duration-300"
             >
               Book Your Flight
@@ -107,7 +119,7 @@ function Home() {
                   </h3>
                   <p className="mb-4">Explore amazing deals</p>
                   <button 
-                    onClick={navigateToBook} 
+                    onClick={()=>navigateToBook(city)} 
                     className="btn-secondary"
                   >
                     Book Now
@@ -125,7 +137,7 @@ function Home() {
           <h2 className="text-3xl font-bold mb-6 cta-text">Ready for your next adventure?</h2>
           <p className="text-lg mb-8">Book your flight today and enjoy a seamless travel experience with Parvaaz.</p>
           <button 
-            onClick={navigateToBook}
+            onClick={()=>navigateToBook()}
             className="bg-white text-gray-800 font-medium py-3 px-8 rounded-lg hover:bg-black hover:text-white transition duration-300 shadow-lg"
           >
             Start Booking

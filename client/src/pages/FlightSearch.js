@@ -461,7 +461,7 @@ function FlightSearch() {
                                     {flight.departure_time?.slice(0, 5) || "N/A"} - {flight.arrival_time?.slice(0, 5) || "N/A"}
                                   </p>
                                   <p className="text-gray-600 text-sm">
-                                    {flight.airline_name || "Unknown"} | {flight.airline_code || "N/A"} • {flight.flight_code || "N/A"}
+                                    {flight?.airline_name || "Unknown"} | {flight.airline_code || "N/A"} • {flight.flight_code || "N/A"}
                                   </p>
                                 </div>
                             <div className="flex items-center justify-between">

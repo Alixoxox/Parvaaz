@@ -17,12 +17,12 @@ export const AppProvider = ({ children }) => {
       const [modifiedFlightData,setmodifyFlightData]=useState([]) //copy
       const [selectedFlight,setselectedFlight]=useState(null)
       const [bookedAnchor,setbookedAnchor]=useState(false)
-      // const [multiCity, setMultiCity] = useState([{ fromCity: '', toCity: '', departDate: '' }]);
+      const [selectedBaggage, setSelectedBaggage] = useState({checked: 0,cabin: false });    
       const [admin, setAdmin] = useState({ username: '', password: '' });  
       const [startFlightD,setstartFlightD]=useState(null);
 
   return (
-    <AppContext.Provider value={{bookedAnchor,setbookedAnchor,admin,setAdmin,user, setUser ,bookingHistory,setbookingHistory,tripType, setTripType,fromCity, setFromCity,toCity, setToCity,departDate, setDepartDate,returnDate, setReturnDate,passengers, setPassengers,cabinClass, setCabinClass,modifiedFlightData,setmodifyFlightData,selectedFlight,setselectedFlight,startFlightD,setstartFlightD}}>
+    <AppContext.Provider value={{selectedBaggage, setSelectedBaggage,bookedAnchor,setbookedAnchor,admin,setAdmin,user, setUser ,bookingHistory,setbookingHistory,tripType, setTripType,fromCity, setFromCity,toCity, setToCity,departDate, setDepartDate,returnDate, setReturnDate,passengers, setPassengers,cabinClass, setCabinClass,modifiedFlightData,setmodifyFlightData,selectedFlight,setselectedFlight,startFlightD,setstartFlightD}}>
       {children}
     </AppContext.Provider>
   );

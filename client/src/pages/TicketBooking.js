@@ -4,25 +4,32 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useApp } from "../context/parvaaz";
 import { bookFlight } from "../utils/flightService";
-import { getCityFromIATA } from "../utils/aviationstack";
+import { calculateTotalPrice, getCityFromIATA } from "../utils/aviationstack";
 import { toast } from "react-toastify";
 function TicketBooking() {
   const location = useLocation();
   const navigate = useNavigate();
+  const {user,selectedFlight,  cabinClass, returnDate, passengers, toCity, fromCity, tripType, setbookedAnchor, startFlightD ,selectedBaggage } = useApp();
+  const baggageOptions = {
+    checked: [
+      { weight: "10kg", price: 270 },
+      { weight: "20kg", price: 540 },
+      { weight: "30kg", price: 810 },
+    ],
+    cabin: { weight: "7kg", price: 189 }
+  };
+  
+  // Calculate extra baggage cost:
+  const extraCheckedCost =
+    selectedBaggage.checked > 0
+      ? baggageOptions.checked[selectedBaggage.checked - 1].price
+      : 0;
+  
+  const extraCabinCost = selectedBaggage.cabin ? baggageOptions.cabin.price : 0;
+  
+  const totalExtraBaggageCost = extraCheckedCost + extraCabinCost;
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
-  const {
-    user,
-    selectedFlight,  //contains incoming/arrival for roundtrip and departure for oneway
-    cabinClass,
-    returnDate,
-    passengers,
-    toCity,
-    fromCity,
-    tripType,
-    setbookedAnchor, //links to the user booking
-    startFlightD //contains the departure flight for roundtrip
-  } = useApp();
   const [bookingReference, setBookingReference] = useState();
   const flightData = location.state?.flight || selectedFlight;
   const [paymentMethod, setPaymentMethod] = useState("creditCard");
@@ -36,7 +43,7 @@ function TicketBooking() {
   const [roundD,setroundD]=useState(null)
   const [isLoading, setIsLoading] = useState(false);
   const [isBooked, setIsBooked] = useState(false);
-const [bookingRef2,setBookingRef2]=useState(null)
+  const [bookingRef2,setBookingRef2]=useState(null)
   const handleCardDetailsChange = (e) => {
     const { name, value } = e.target;
     setCardDetails({
@@ -53,16 +60,7 @@ const [bookingRef2,setBookingRef2]=useState(null)
     } else {
       const bookit = async () => {
         try {
-          const data = await bookFlight(
-            flightData.schedule_id,
-            flightData.flight_id,
-            tripType,
-            returnDate,
-            fromCity,
-            toCity,
-            cabinClass,
-            passengers
-          );
+          const data = await bookFlight( flightData.schedule_id, flightData.flight_id,tripType, returnDate,fromCity, toCity, cabinClass, passengers,selectedBaggage);
           console.log(data)
           // Handle failed booking
           if (data.error?.startsWith( `No return flight on`)||data.message === "Failed to book flight") {
@@ -96,9 +94,6 @@ const [bookingRef2,setBookingRef2]=useState(null)
       bookit();
     }
   };
-useEffect(()=>{
-  console.log(bookingRef2,bookingReference,seatsbooked)
-},[bookingRef2,bookingReference,seatsbooked])
   const handleViewTicket = () => {
     setbookedAnchor(true);
     navigate("/user-profile");
@@ -304,6 +299,21 @@ useEffect(()=>{
                       <span className="text-gray-600">Ticket Type</span>
                       <span className="font-medium capitalize">{tripType}</span>
                   </div>
+                  
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-gray-600">Cabin baggage (7kg)</p>
+                    <p className={`${selectedBaggage.cabin ? "text-green-600" : "text-gray-400"} ml-4`}>
+                      {selectedBaggage.cabin ? `(+$${baggageOptions.cabin.price})` : "Not selected"}
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center mb-2 text-gray-600">
+                    <span>
+                      Checked baggage ({selectedBaggage.checked > 0 ? baggageOptions.checked[selectedBaggage.checked - 1].weight : "None"})
+                    </span>
+                    <span className={`${selectedBaggage.checked > 0 ? "text-green-600" : "text-gray-400"} ml-4`}>
+                      {selectedBaggage.checked > 0 ? `(+$${extraCheckedCost})` : "Not selected"}
+                    </span>
+                  </div>
                     <div className="flex justify-between mb-2">
                       <span className="text-gray-600 mr-1">Ticket Price{startFlightD ?"s (2-Flights)":null }</span>
                       <span className="font-medium">
@@ -322,34 +332,23 @@ useEffect(()=>{
                       </span>
                     </div>
                     <div className="flex justify-between mb-2">
-                      <span className="text-gray-600">Taxes & Fees</span>
-                      <span className="font-medium">
-                        {cabinClass === "economy"
-                          ? `${75*2}`
-                          : cabinClass === "business"
-                          ? `${150*2}`
-                          : cabinClass === "first"
-                          ? `${120*2}`
-                          : cabinClass === "premium_economy"
-                          ? `${100*2}`
-                          : "N/A"}
-                      </span>
-                    </div>
+                        <span className="text-gray-600">Taxes & Fees</span>
+                        <span className="font-medium">
+                          {cabinClass === "economy"
+                            ? 75 * (tripType === "roundtrip" ? 2 : 1)
+                            : cabinClass === "business"
+                            ? 150 * (tripType === "roundtrip" ? 2 : 1)
+                            : cabinClass === "first"
+                            ? 120 * (tripType === "roundtrip" ? 2 : 1)
+                            : cabinClass === "premium_economy"
+                            ? 100 * (tripType === "roundtrip" ? 2 : 1)
+                            : 0}
+                        </span>
+                      </div>
                     <div className="flex justify-between pt-2 border-t mt-2">
                       <span className="font-semibold">Total</span>
                       <span className="font-bold text-xl">
-                        $
-                        {
-                          cabinClass === "economy"
-                            ? `${tripType === "roundtrip" ? (flightData.cost_eco + 75) * 2 : flightData.cost_eco + 75}`
-                            : cabinClass === "business"
-                            ? `${tripType === "roundtrip" ? (flightData.cost_eco + 150) * 2 : flightData.cost_eco + 150}`
-                            : cabinClass === "first"
-                            ? `${tripType === "roundtrip" ? (flightData.cost_eco + 120) * 2 : flightData.cost_eco + 120}`
-                            : cabinClass === "premium_economy"
-                            ? `${tripType === "roundtrip" ? (flightData.cost_eco + 100) * 2 : flightData.cost_eco + 100}`
-                            : "N/A"
-                        }
+                        ${calculateTotalPrice({ cabinClass, tripType, flightData, totalExtraBaggageCost }) ?? "N/A"}
                       </span>
                     </div>
                   </div>
@@ -521,18 +520,7 @@ useEffect(()=>{
                           Processing...
                         </>
                       ) : (
-                        `Pay $${
-                          cabinClass === "economy"
-                            ? `${flightData.cost_eco + 75}`
-                            : cabinClass === "business"
-                            ? `${flightData.cost_eco + 150}`
-                            : cabinClass === "first"
-                            ? `${flightData.cost_eco + 120}`
-                            : cabinClass === "premium_economy"
-                            ? `${flightData.cost_eco + 100}`
-                            : "N/A"
-                        } and Confirm Booking`
-                      )}
+                        `Pay ${"$"+ calculateTotalPrice({ cabinClass, tripType, flightData, totalExtraBaggageCost }) ?? "N/A"}` )}
                     </button>
                   </div>
 

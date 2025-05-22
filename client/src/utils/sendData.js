@@ -1,11 +1,10 @@
 export const createUser=async(name,dob,nationality,passport_no,passportScan,email,password,IdScan,cnic)=>{
     try {
-        
         const [fname, ...rest] = name.trim().split(" ")
         const lname=rest.join(" ");
         if(!fname ||!lname ||!dob ||!nationality ||!passport_no ||!passportScan ||!email|| !password){
             console.log(fname,lname,name,dob,nationality,passport_no,passportScan,email,password)
-            return {message:"Enter all the required fields"}
+            return {fail:"Enter all the required fields"}
         }
         const formData = new FormData();
         formData.append("fname", fname);
@@ -36,7 +35,7 @@ export const createUser=async(name,dob,nationality,passport_no,passportScan,emai
         return reply.user;
     } catch (err) {
         console.log(err);
-        return { message: "An error occurred"};
+        return { fail: "An error occurred"};
     }
 };
 

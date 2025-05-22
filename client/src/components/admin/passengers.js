@@ -42,7 +42,7 @@ const Passengers = () => {
     
   return (
     <div>
-                <h2 className="text-3xl font-bold mb-6">Passengers</h2>
+                <h2 className="text-3xl font-bold mb-6">Registered Users</h2>
                 <form onSubmit={handleAddPassenger} className="mb-8 bg-white p-6 rounded-lg shadow-md">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input
@@ -124,7 +124,7 @@ const Passengers = () => {
                         </tr>
                       ))):(
                         <tr>
-                        <td colSpan="8" className="px-6 py-4 text-center">No Passengers found</td>
+                        <td colSpan="8" className="px-6 py-4 text-center">No Users found</td>
                       </tr>
                       )}
                     </tbody>

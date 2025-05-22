@@ -46,7 +46,17 @@ export const searchFlights = async (fromCity, toCity, departDate, returnDate, ca
       message: err.message || "Something went wrong"
     };
   }}
-  export const bookFlight = async (schedule_id, flight_id, tripType, returnDate, FromCity, ToCity, cabin_class, passengers) => {
+  export const bookFlight = async (
+    schedule_id,
+    flight_id,
+    tripType,
+    returnDate,
+    FromCity,
+    ToCity,
+    cabin_class,
+    passengers,
+    selectedBaggage
+  ) => {
     try {
       if (tripType === 'roundtrip' && !returnDate) {
         toast.warn('Please select a return date before confirming a round-trip booking.');
@@ -63,77 +73,108 @@ export const searchFlights = async (fromCity, toCity, departDate, returnDate, ca
       }
   
       let cleaned_token = token.trim();
-      // Remove quotes if they exist
       if (cleaned_token.startsWith('"') && cleaned_token.endsWith('"')) {
         cleaned_token = cleaned_token.slice(1, -1);
       }
   
       let response;
-      
-      console.log("Booking flight with parameters:", {
-        schedule_id, flight_id, tripType, returnDate, FromCity, ToCity, cabin_class, passengers
-      });
-      let fromCity=await toIata(FromCity)
-       let toCity=await toIata(ToCity)
-      
+  
+      let fromCity = await toIata(FromCity);
+      let toCity = await toIata(ToCity);
+  
       if (tripType === "roundtrip") {
         response = await fetch("http://localhost:5000/api/users/booking/new/roundtrip", {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json", 
-            'Authorization': `Bearer ${cleaned_token}` // Fixed template literal syntax
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${cleaned_token}`
           },
-          body: JSON.stringify({ 
-            schedule_id, 
-            flight_id, 
-            returnDate, 
-            fromCity, 
-            toCity, 
-            cabin_class, 
-            passengers: Number(passengers) 
+          body: JSON.stringify({
+            schedule_id,
+            flight_id,
+            returnDate,
+            fromCity,
+            toCity,
+            cabin_class,
+            passengers
           })
         });
       } else {
         response = await fetch("http://localhost:5000/api/users/booking/new/oneway", {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json", 
-            'Authorization': `Bearer ${cleaned_token}` // Fixed template literal syntax
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${cleaned_token}`
           },
-          body: JSON.stringify({ 
-            flight_id, 
-            schedule_id, 
-            cabin_class, 
-            passengers: Number(passengers) 
+          body: JSON.stringify({
+            flight_id,
+            schedule_id,
+            cabin_class,
+            passengers
           })
         });
       }
-      
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Booking error:", errorData);
         return { message: errorData.message || "Failed to book flight" };
       }
-      
+  
       const data = await response.json();
-      
-      if(tripType === 'roundtrip') {
-        // Fixed return structure to match backend response
-        return { 
-          message: data.message, 
-          trip: "roundtrip",   
-          outbound: { seats: data.outbound.seats, bookingIds: data.outbound.bookingIds }, 
-          inbound: { seats: data.inbound.seats, bookingIds: data.inbound.bookingIds }
+  
+      // Handle baggage saving for roundtrip
+      if (tripType === 'roundtrip' && data.outbound && data.inbound) {
+        const allBookingIds = [...data.outbound.bookingIds, ...data.inbound.bookingIds];
+  
+        await Promise.all(
+          allBookingIds.map(booking_id =>
+            fetch("http://localhost:5000/api/data/baggage/new", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${cleaned_token}`
+              },
+              body: JSON.stringify({ booking_id, selectedBaggage })
+            })
+          )
+        );
+  
+        return {
+          message: data.message,
+          trip: "roundtrip",
+          outbound: data.outbound,
+          inbound: data.inbound
         };
       }
-      if (data.message) {
-        return { message: data.message, bookingIds: data.bookingIds, seats: data.seats };
+  
+      // Handle baggage saving for one-way multi-passenger
+      if (data.bookingIds && data.bookingIds.length > 0) {
+        await Promise.all(
+          data.bookingIds.map(booking_id =>
+            fetch("http://localhost:5000/api/data/baggage/new", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${cleaned_token}`
+              },
+              body: JSON.stringify({ booking_id, selectedBaggage })
+            })
+          )
+        );
+  
+        return {
+          message: data.message,
+          bookingIds: data.bookingIds,
+          seats: data.seats
+        };
       }
-      
+  
       return { message: data.error || "Booking successful", bookingIds: data.bookingIds, seats: data.seats };
-      
+  
     } catch (err) {
       console.error("Booking error:", err);
       return { message: "An error occurred during booking" };
     }
-  }
+  };
+  

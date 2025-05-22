@@ -18,7 +18,6 @@ const sql=`CREATE TABLE IF NOT EXISTS baggage(
     weight FLOAT NOT NULL,             -- In kgs
     size_tag VARCHAR(10),              -- like 'S', 'L', 'XL',"XXL"
     extra_charge FLOAT DEFAULT 0.0,
-
     FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
 );`
 baggage_tb.query(sql,(error)=>{

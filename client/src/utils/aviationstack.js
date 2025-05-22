@@ -87,3 +87,37 @@ export const getCityFromIATA = (iataCode) => {
   
     return path;
   };
+
+  export function calculateTotalPrice({
+    cabinClass,
+    tripType,
+    flightData,
+    totalExtraBaggageCost,
+  }) {
+    // Get base ticket price
+    let baseCost = 0;
+    if (cabinClass === "economy") {
+      baseCost = tripType === "roundtrip" ? flightData.cost_eco * 2 : flightData.cost_eco;
+    } else if (cabinClass === "business") {
+      baseCost = tripType === "roundtrip" ? flightData.cost_buis * 2 : flightData.cost_buis;
+    } else if (cabinClass === "first") {
+      baseCost = tripType === "roundtrip" ? flightData.cost_first_class * 2 : flightData.cost_first_class;
+    } else if (cabinClass === "premium_economy") {
+      baseCost = tripType === "roundtrip" ? flightData.cost_pre_eco * 2 : flightData.cost_pre_eco;
+    } else {
+      return null;
+    }
+  
+    // Taxes per cabin class, per flight leg
+    let taxesPerLeg = 0;
+    if (cabinClass === "economy") taxesPerLeg = 75;
+    else if (cabinClass === "business") taxesPerLeg = 150;
+    else if (cabinClass === "first") taxesPerLeg = 120;
+    else if (cabinClass === "premium_economy") taxesPerLeg = 100;
+  
+    let numberOfLegs = tripType === "roundtrip" ? 2 : 1;
+    let taxes = taxesPerLeg * numberOfLegs;
+  
+    console.log(baseCost,taxes,totalExtraBaggageCost)
+    return baseCost + taxes + totalExtraBaggageCost;
+  }

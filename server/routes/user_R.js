@@ -24,10 +24,10 @@ router.post("/signup",upload.fields([
         user_tb.query(sql, [email,passport_no],async(err, qres) => {
         if (err) {
             console.log("Error selecting data from users table", err);
-            return res.json({message:"Please Try Again Later\nSorry For the inconvenience"})
+            return res.json({fail:"Please Try Again Later\nSorry For the inconvenience"})
         }
         if (qres.length > 0) {
-           return res.json({message: "Email or Passport-no already taken"});
+           return res.json({fail: "Email or Passport-no already taken"});
         }
         const hashed_pass= await bcrypt.hash(password,10)
         const put_data_sql=`INSERT INTO users (fname,lname,email, passport_no, password,nationality,passportImg,DOB,cnicNo,cnicImg) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?);;`
@@ -35,7 +35,7 @@ router.post("/signup",upload.fields([
             if(error){
                 console.log("erorr inserting data",error);
                 if(error.code==="ER_DUP_ENTRY"){ 
-                    return res.json({ message: " email or passport already taken" });
+                    return res.json({ fail: " email or passport already taken" });
                 } return res.json({message:"Please Try Again Later\nSorry For the inconvenience"})
             }else{
                 const user={id:result.insertId,fname:fname,lname:lname,email:email,passport_no:passport_no,role:"user",DOB:dob,nationality,passportImg,cnicNo,cnicImg}
@@ -46,7 +46,7 @@ router.post("/signup",upload.fields([
         });
     }catch(err){
         console.log(err);
-        return res.json({message:"somehing went wrong Please try again later"})}
+        return res.json({fail:"somehing went wrong Please try again later"})}
 });
 router.post("/login", (req, res) => {
     try{
