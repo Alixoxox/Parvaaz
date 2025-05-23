@@ -9,8 +9,6 @@ import bookingRoute from "./routes/bookings.js"
 import baggage_Router from './routes/baggae_R.js'
 import inquiries_R from './routes/inq_R.js'
 import RateLimit from 'express-rate-limit';
-import inquiries_R from './routes/inq_R.js'
-import RateLimit from 'express-rate-limit';
 const app=express()
 
 const limiter = RateLimit({

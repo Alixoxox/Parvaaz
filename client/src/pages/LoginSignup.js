@@ -20,11 +20,12 @@ const LoginSignup = () => {
   const [IdScan,setIdImg]=useState("");
   const [dob,setDob]=useState("");
   const [nationality,setnationality]=useState("")
-  
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true)
     if (isSignup) {
       if (name.trim().split(" ").length < 2) {
         toast.warn("Please enter your full name (first and last).");
@@ -48,6 +49,7 @@ const LoginSignup = () => {
         navigate(-1);
       }
     }
+    setIsLoading(false);
   };
 
   return (
