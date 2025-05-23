@@ -29,7 +29,6 @@ app.use('/api/data/flights',flightsRouter);
 app.use('/api/data/airlines',airlinesRouter);
 app.use("/api/admin",adminRoute)
 app.use('/api/users/booking',bookingRoute)
-app.use("/api/inquiries", inquiries_R)
 app.use('/api/data/baggage', baggage_Router)
 app.use("/api/inquiries", inquiries_R)
 app.listen(PORT,()=>{
