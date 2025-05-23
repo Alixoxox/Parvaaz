@@ -176,11 +176,11 @@ function FlightDetails() {
               <h2 className="text-xl font-semibold mb-4 border-b pb-2">Flight Summary</h2>
               <div className="flex items-center justify-between mb-6">
                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-xl font-bold text-blue-600 uppercase">
-                  {flightInfo.airline_name.charAt(0)}
+                  {flightInfo?.airline_name.charAt(0)}
                 </div>
                 <div className="flex-1 px-4">
-                  <p className="text-lg font-medium capitalize">{flightInfo.airline_name}</p>
-                  <p className="text-gray-500 text-sm">{flightInfo.flight_code}</p>
+                  <p className="text-lg font-medium capitalize">{flightInfo?.airline_name}</p>
+                  <p className="text-gray-500 text-sm">{flightInfo?.flight_code}</p>
                 </div>
               </div>
               
@@ -191,9 +191,9 @@ function FlightDetails() {
                   <MdFlightTakeoff className='ms-1 text-2xl'/> 
                 </div>
     
-                <p className="text-xl font-semibold">{flightInfo.departure_time.slice(0,5)}</p>
-                <p className="text-base capitalize">{getCityFromIATA(flightInfo.origin)}</p>
-                <p className="text-sm text-gray-500">{flightInfo.flight_date.slice(0,10)}</p>
+                <p className="text-xl font-semibold">{flightInfo?.departure_time.slice(0,5)}</p>
+                <p className="text-base capitalize">{getCityFromIATA(flightInfo?.origin)}</p>
+                <p className="text-sm text-gray-500">{flightInfo?.flight_date.slice(0,10)}</p>
               </div>
     
               <div className="flex flex-col items-center px-4">

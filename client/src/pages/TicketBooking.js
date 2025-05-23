@@ -53,7 +53,8 @@ function TicketBooking() {
   };
   const handleConfirmBooking = () => {
     setIsLoading(true);
-    if (!user) {
+    const usertoken = localStorage.getItem("authtoken");
+    if (!usertoken) {
       navigate("/login", { replace: true });
       setIsBooked(false);
       toast.warn("You must be an active user first");

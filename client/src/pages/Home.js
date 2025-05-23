@@ -27,7 +27,7 @@ function Home() {
   const navigateToCountry = (country) => {
     const countryWebsites = {
       'Dubai': 'https://www.visitdubai.com/',
-      'New York': 'https://www.nyc.gov/',
+      'New-York': 'https://www.nyc.gov/',
       'London': 'https://www.visitlondon.com/'
     };
     
