@@ -131,7 +131,8 @@ function FlightDetails() {
   };
 
   const handleContinue = () => {
-    if (!user) {
+    const usertoken=localStorage.getItem("authtoken")
+    if (!usertoken) {
       toast.warn("You must be logged in to continue");
       navigate("/login");
       return;

@@ -18,7 +18,7 @@ router.post("/signup",upload.fields([
         const cnicImg = cnicFile?.path||null;
         const { fname, lname, email, passport_no, password ,nationality,dob,cnicNo} = req.body;
         if (!fname || !lname || !email || !passport_no ||!password ) {  //if any-field empty
-           return res.json({message:"Please fill out the propper credentails"});
+           return res.json({fail:"Please fill out the propper credentails"});
         }
         const sql = `SELECT * FROM users WHERE email = ? OR passport_no=?;`;
         user_tb.query(sql, [email,passport_no],async(err, qres) => {

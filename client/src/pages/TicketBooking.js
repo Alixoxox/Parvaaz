@@ -483,7 +483,7 @@ function TicketBooking() {
                       </p>
                       <img
                         src="/images/googlepay-logo.png"
-                        alt="Google Pay"
+                        alt="Google Pay"rs
                         className="h-10 mx-auto"
                       />
                     </div>

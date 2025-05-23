@@ -207,8 +207,8 @@ function UserProfile() {
               <div className="flex items-center mb-4 md:mb-0">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-blue-600 text-2xl font-bold mr-4">
                   {formData.displayName && formData.displayName !== "-"
-                    ? formData.displayName.charAt(0).toUpperCase()
-                    : formData.email.charAt(0).toUpperCase()}
+                    ? formData.displayName.charAt(0)?.toUpperCase()
+                    : formData.email.charAt(0)?.toUpperCase()}
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">
